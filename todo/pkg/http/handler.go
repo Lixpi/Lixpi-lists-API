@@ -13,15 +13,19 @@ import (
 
 // makeGetHandler creates the handler logic
 func makeGetHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/get").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.GetEndpoint, decodeGetRequest, encodeGetResponse, options...)))
+   m.Methods("GET").Path("/").Handler(
+      handlers.CORS(
+         handlers.AllowedMethods([]string{"GET"}),
+         handlers.AllowedOrigins([]string{"*"}),
+      )(http.NewServer(endpoints.GetEndpoint, decodeGetRequest, encodeGetResponse, options...)),
+   )
 }
 
 // decodeGetResponse  is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
-func decodeGetRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.GetRequest{}
-	err := json.NewDecoder(r.Body).Decode(&req)
-	return req, err
+func decodeGetRequest(_ context.Context, r *http1.Request)(interface{}, error) {
+   req := endpoint.GetRequest{}
+   return req, nil
 }
 
 // encodeGetResponse is a transport/http.EncodeResponseFunc that encodes
@@ -38,7 +42,12 @@ func encodeGetResponse(ctx context.Context, w http1.ResponseWriter, response int
 
 // makeAddHandler creates the handler logic
 func makeAddHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/add").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.AddEndpoint, decodeAddRequest, encodeAddResponse, options...)))
+   m.Methods("POST", "OPTIONS").Path("/add").Handler(
+      handlers.CORS(
+         handlers.AllowedOrigins([]string{"*"}),
+         handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+         handlers.AllowedMethods([]string{"POST"}),
+      )(http.NewServer(endpoints.AddEndpoint, decodeAddRequest, encodeAddResponse, options...)))
 }
 
 // decodeAddResponse  is a transport/http.DecodeRequestFunc that decodes a
@@ -63,7 +72,12 @@ func encodeAddResponse(ctx context.Context, w http1.ResponseWriter, response int
 
 // makeSetCompleteHandler creates the handler logic
 func makeSetCompleteHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/set-complete").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.SetCompleteEndpoint, decodeSetCompleteRequest, encodeSetCompleteResponse, options...)))
+   m.Methods("PUT", "OPTIONS").Path("/set-complete").Handler(
+      handlers.CORS(
+         handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+         handlers.AllowedMethods([]string{"PUT"}),
+         handlers.AllowedOrigins([]string{"*"}),
+      )(http.NewServer(endpoints.SetCompleteEndpoint, decodeSetCompleteRequest, encodeSetCompleteResponse, options...)))
 }
 
 // decodeSetCompleteResponse  is a transport/http.DecodeRequestFunc that decodes a
@@ -88,7 +102,12 @@ func encodeSetCompleteResponse(ctx context.Context, w http1.ResponseWriter, resp
 
 // makeRemoveCompleteHandler creates the handler logic
 func makeRemoveCompleteHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/remove-complete").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.RemoveCompleteEndpoint, decodeRemoveCompleteRequest, encodeRemoveCompleteResponse, options...)))
+   m.Methods("PUT", "OPTIONS").Path("/remove-complete").Handler(
+      handlers.CORS(
+         handlers.AllowedMethods([]string{"PUT"}),
+         handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+         handlers.AllowedOrigins([]string{"*"}),
+      )(http.NewServer(endpoints.RemoveCompleteEndpoint, decodeRemoveCompleteRequest, encodeRemoveCompleteResponse, options...)))
 }
 
 // decodeRemoveCompleteResponse  is a transport/http.DecodeRequestFunc that decodes a
@@ -112,16 +131,27 @@ func encodeRemoveCompleteResponse(ctx context.Context, w http1.ResponseWriter, r
 }
 
 // makeDeleteHandler creates the handler logic
-func makeDeleteHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/delete").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.DeleteEndpoint, decodeDeleteRequest, encodeDeleteResponse, options...)))
+func makeDeleteHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http1.ServerOption) {
+   m.Methods("DELETE", "OPTIONS").Path("/delete/{id}").Handler(
+      handlers.CORS(
+         handlers.AllowedMethods([]string{"DELETE"}),
+         handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+         handlers.AllowedOrigins([]string{"*"}),
+      )(http1.NewServer(endpoints.DeleteEndpoint, decodeDeleteRequest, encodeDeleteResponse, options...)))
 }
 
 // decodeDeleteResponse  is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeDeleteRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.DeleteRequest{}
-	err := json.NewDecoder(r.Body).Decode(&req)
-	return req, err
+   vars := mux.Vars(r)
+   id, ok := vars["id"]
+   if !ok {
+      return nil, errors.New("not a valid ID")
+   }
+   req := endpoint.DeleteRequest{
+      Id: id,
+   }
+   return req, nil
 }
 
 // encodeDeleteResponse is a transport/http.EncodeResponseFunc that encodes

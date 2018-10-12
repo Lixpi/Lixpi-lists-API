@@ -1,8 +1,8 @@
-hash: 91fcf7cbe3c4c357d4c065d5216340f146ad68a897294b3eb13ba43937f8d51e
-updated: 2018-10-11T23:53:21.166321-04:00
+hash: 4cde629f772d697d8afabb463b0cabf7065cecb3b13298e61a99973ef443ab9f
+updated: 2018-10-12T16:58:57.079292-04:00
 imports:
 - name: github.com/apache/thrift
-  version: 2a2b72f6c8aef200ecee4984f011e06052288ff2
+  version: 961fa701346a3aaa804db8845f5eb38ea230b353
   subpackages:
   - lib/go/thrift
 - name: github.com/beorn7/perks
@@ -54,7 +54,7 @@ imports:
 - name: github.com/golang/snappy
   version: 2e65f85255dbc3072edf28d6b5b8efc472979f5a
 - name: github.com/gorilla/context
-  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+  version: 51ce91d2eaddeca0ef29a71d766bb3634dadf729
 - name: github.com/gorilla/handlers
   version: 7e0847f9db758cdebd26c149d0ae9d5d0b9c98ce
 - name: github.com/gorilla/mux

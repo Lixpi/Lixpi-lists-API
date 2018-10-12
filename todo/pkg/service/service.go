@@ -18,24 +18,52 @@ type TodoService interface {
 type basicTodoService struct{}
 
 func (b *basicTodoService) Get(ctx context.Context) (t []io.Todo, error error) {
-	// TODO implement the business logic of Get
-	return t, error
+   session, err := db.GetMongoSession()
+   if err != nil {
+      return t, err
+   }
+   defer session.Close()
+   c := session.DB("todo_app").C("todos")
+   error = c.Find(nil).All(&t)
+   return t, error
 }
 func (b *basicTodoService) Add(ctx context.Context, todo io.Todo) (t io.Todo, error error) {
-	// TODO implement the business logic of Add
-	return t, error
+   todo.Id = bson.NewObjectId()
+   session, err := db.GetMongoSession()
+   if err != nil {
+      return t, err
+   }
+   defer session.Close()
+   c := session.DB("todo_app").C("todos")
+   error = c.Insert(&todo)
+   return todo, error
 }
 func (b *basicTodoService) SetComplete(ctx context.Context, id string) (error error) {
-	// TODO implement the business logic of SetComplete
-	return error
+   session, err := db.GetMongoSession()
+   if err != nil {
+      return err
+   }
+   defer session.Close()
+   c := session.DB("todo_app").C("todos")
+   return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": true}})
 }
 func (b *basicTodoService) RemoveComplete(ctx context.Context, id string) (error error) {
-	// TODO implement the business logic of RemoveComplete
-	return error
+   session, err := db.GetMongoSession()
+   if err != nil {
+      return err
+   }
+   defer session.Close()
+   c := session.DB("todo_app").C("todos")
+   return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": false}})
 }
 func (b *basicTodoService) Delete(ctx context.Context, id string) (error error) {
-	// TODO implement the business logic of Delete
-	return error
+   session, err := db.GetMongoSession()
+   if err != nil {
+      return err
+   }
+   defer session.Close()
+   c := session.DB("todo_app").C("todos")
+   return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 }
 
 // NewBasicTodoService returns a naive, stateless implementation of TodoService.

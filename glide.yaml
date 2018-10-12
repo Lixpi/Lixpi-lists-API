@@ -6,3 +6,4 @@ import:
   version: ~1.6.2
 - package: github.com/gorilla/handlers
   version: ~1.4.0
+- package: gopkg.in/mgo.v2
