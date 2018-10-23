@@ -3,7 +3,11 @@ package service
 import (
 	"context"
 
+    "gopkg.in/mgo.v2/bson"
+
 	"github.com/kujtimiihoxha/todo-gokit-demo/todo/pkg/io"
+
+    db "lixpi-lists/todo/pkg/db"
 )
 
 // TodoService describes the service.
