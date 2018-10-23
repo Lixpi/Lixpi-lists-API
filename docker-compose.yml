@@ -1,0 +1,12 @@
+version: "2"
+services:
+  todo:
+    build:
+      context: .
+      dockerfile: todo/Dockerfile
+    restart: always
+    volumes:
+    - .:/go/src/lixpi-lists
+    container_name: todo
+    ports:
+    - 8800:8081
