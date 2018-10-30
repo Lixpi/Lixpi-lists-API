@@ -3,6 +3,15 @@ package service
 import (
 	"flag"
 	"fmt"
+	endpoint "lixpi-lists/todo/pkg/endpoint"
+	http "lixpi-lists/todo/pkg/http"
+	service "lixpi-lists/todo/pkg/service"
+	"net"
+	http1 "net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
 	endpoint1 "github.com/go-kit/kit/endpoint"
 	log "github.com/go-kit/kit/log"
 	prometheus "github.com/go-kit/kit/metrics/prometheus"
@@ -12,16 +21,8 @@ import (
 	zipkingoopentracing "github.com/openzipkin/zipkin-go-opentracing"
 	prometheus1 "github.com/prometheus/client_golang/prometheus"
 	promhttp "github.com/prometheus/client_golang/prometheus/promhttp"
-	endpoint "lixpi-lists/todo/pkg/endpoint"
-	http "lixpi-lists/todo/pkg/http"
-	service "lixpi-lists/todo/pkg/service"
-	"net"
-	http1 "net/http"
-	"os"
-	"os/signal"
 	appdash "sourcegraph.com/sourcegraph/appdash"
 	opentracing "sourcegraph.com/sourcegraph/appdash/opentracing"
-	"syscall"
 )
 
 var tracer opentracinggo.Tracer
