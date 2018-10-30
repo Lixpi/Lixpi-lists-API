@@ -2,9 +2,10 @@ package endpoint
 
 import (
 	"context"
+	service "lixpi-lists/todo/pkg/service"
+
 	endpoint "github.com/go-kit/kit/endpoint"
 	io "github.com/kujtimiihoxha/todo-gokit-demo/todo/pkg/io"
-	service "lixpi-lists/todo/pkg/service"
 )
 
 // GetRequest collects the request parameters for the Get method.
@@ -187,4 +188,42 @@ func (e Endpoints) Delete(ctx context.Context, id string) (error error) {
 		return
 	}
 	return response.(DeleteResponse).Error
+}
+
+// GetByIdRequest collects the request parameters for the GetById method.
+type GetByIdRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIdResponse collects the response parameters for the GetById method.
+type GetByIdResponse struct {
+	T     io.Todo `json:"t"`
+	Error error   `json:"error"`
+}
+
+// MakeGetByIdEndpoint returns an endpoint that invokes GetById on the service.
+func MakeGetByIdEndpoint(s service.TodoService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIdRequest)
+		t, error := s.GetById(ctx, req.Id)
+		return GetByIdResponse{
+			Error: error,
+			T:     t,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIdResponse) Failed() error {
+	return r.Error
+}
+
+// GetById implements Service. Primarily useful in a client.
+func (e Endpoints) GetById(ctx context.Context, id string) (t io.Todo, error error) {
+	request := GetByIdRequest{Id: id}
+	response, err := e.GetByIdEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIdResponse).T, response.(GetByIdResponse).Error
 }

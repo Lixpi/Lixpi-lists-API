@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-    "gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/bson"
 
 	"github.com/kujtimiihoxha/todo-gokit-demo/todo/pkg/io"
 
-    db "lixpi-lists/todo/pkg/db"
+	db "lixpi-lists/todo/pkg/db"
 )
 
 // TodoService describes the service.
@@ -17,57 +17,58 @@ type TodoService interface {
 	SetComplete(ctx context.Context, id string) (error error)
 	RemoveComplete(ctx context.Context, id string) (error error)
 	Delete(ctx context.Context, id string) (error error)
+	GetById(ctx context.Context, id string) (t io.Todo, error error)
 }
 
 type basicTodoService struct{}
 
 func (b *basicTodoService) Get(ctx context.Context) (t []io.Todo, error error) {
-   session, err := db.GetMongoSession()
-   if err != nil {
-      return t, err
-   }
-   defer session.Close()
-   c := session.DB("todo_app").C("todos")
-   error = c.Find(nil).All(&t)
-   return t, error
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return t, err
+	}
+	defer session.Close()
+	c := session.DB("todo_app").C("todos")
+	error = c.Find(nil).All(&t)
+	return t, error
 }
 func (b *basicTodoService) Add(ctx context.Context, todo io.Todo) (t io.Todo, error error) {
-   todo.Id = bson.NewObjectId()
-   session, err := db.GetMongoSession()
-   if err != nil {
-      return t, err
-   }
-   defer session.Close()
-   c := session.DB("todo_app").C("todos")
-   error = c.Insert(&todo)
-   return todo, error
+	todo.Id = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return t, err
+	}
+	defer session.Close()
+	c := session.DB("todo_app").C("todos")
+	error = c.Insert(&todo)
+	return todo, error
 }
 func (b *basicTodoService) SetComplete(ctx context.Context, id string) (error error) {
-   session, err := db.GetMongoSession()
-   if err != nil {
-      return err
-   }
-   defer session.Close()
-   c := session.DB("todo_app").C("todos")
-   return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": true}})
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("todo_app").C("todos")
+	return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": true}})
 }
 func (b *basicTodoService) RemoveComplete(ctx context.Context, id string) (error error) {
-   session, err := db.GetMongoSession()
-   if err != nil {
-      return err
-   }
-   defer session.Close()
-   c := session.DB("todo_app").C("todos")
-   return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": false}})
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("todo_app").C("todos")
+	return c.Update(bson.M{"_id": bson.ObjectIdHex(id)}, bson.M{"$set": bson.M{"complete": false}})
 }
 func (b *basicTodoService) Delete(ctx context.Context, id string) (error error) {
-   session, err := db.GetMongoSession()
-   if err != nil {
-      return err
-   }
-   defer session.Close()
-   c := session.DB("todo_app").C("todos")
-   return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("todo_app").C("todos")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 }
 
 // NewBasicTodoService returns a naive, stateless implementation of TodoService.
@@ -82,4 +83,9 @@ func New(middleware []Middleware) TodoService {
 		svc = m(svc)
 	}
 	return svc
+}
+
+func (b *basicTodoService) GetById(ctx context.Context, id string) (t io.Todo, error error) {
+	// TODO implement the business logic of GetById
+	return t, error
 }

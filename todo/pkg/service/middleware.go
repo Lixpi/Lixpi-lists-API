@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	log "github.com/go-kit/kit/log"
 	io "github.com/kujtimiihoxha/todo-gokit-demo/todo/pkg/io"
 )
@@ -52,4 +53,11 @@ func (l loggingMiddleware) Delete(ctx context.Context, id string) (error error) 
 		l.logger.Log("method", "Delete", "id", id, "error", error)
 	}()
 	return l.next.Delete(ctx, id)
+}
+
+func (l loggingMiddleware) GetById(ctx context.Context, id string) (t io.Todo, error error) {
+	defer func() {
+		l.logger.Log("method", "GetById", "id", id, "t", t, "error", error)
+	}()
+	return l.next.GetById(ctx, id)
 }
