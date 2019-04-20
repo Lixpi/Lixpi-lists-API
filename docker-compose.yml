@@ -1,15 +1,14 @@
-version: "2"
+version: '3'
 services:
-  todo:
-    build:
-      context: .
-      dockerfile: todo/Dockerfile
-    restart: always
+  dev:
+    image: node:11
     volumes:
-    - .:/go/src/lixpi-lists
-    container_name: todo
+      - .:/usr/src/service
+    working_dir: /usr/src/service
+    command: npm run dev
     ports:
-    - 8800:8081
+      - 1234:1234
+      - 3000:3000
   mongodb:
     command: mongod --smallfiles --logpath=/dev/null
     container_name: mongodb

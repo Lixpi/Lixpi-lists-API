@@ -1,0 +1,23 @@
+{
+    "name": "lists_api",
+    "version": "0.0.1",
+    "description": "Lists API",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "node app.js"
+    },
+    "dependencies": {
+        "express": "^4.16.4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Lixpi/Lixpi-lists-API.git"
+    },
+    "author": "Nargiza Sarkulova",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Lixpi/Lixpi-lists-API/issues"
+    },
+    "homepage": "https://github.com/Lixpi/Lixpi-lists-API#readme"
+}
