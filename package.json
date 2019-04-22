@@ -8,8 +8,23 @@
         "dev": "nodemon app.js"
     },
     "dependencies": {
-        "express": "^4.16.4",
-        "nodemon": "^1.18.11"
+        "express": "*",
+        "nodemon": "*",
+        "body-parser": "*",
+        "chai": "*",
+        "connect-flash": "*",
+        "cookie-parser": "*",
+        "debug": "*",
+        "express-session": "*",
+        "jade": "*",
+        "mocha": "*",
+        "mongoose": "*",
+        "morgan": "*",
+        "passport": "*",
+        "passport-local": "*",
+        "passport-local-mongoose": "*",
+        "serve-favicon": "*",
+        "should": "*"
     },
     "repository": {
         "type": "git",
