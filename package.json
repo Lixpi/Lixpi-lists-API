@@ -11,6 +11,7 @@
         "express": "*",
         "nodemon": "*",
         "body-parser": "*",
+        "connect-mongo": "*",
         "connect-flash": "*",
         "cookie-parser": "*",
         "debug": "*",
@@ -21,7 +22,8 @@
         "passport": "*",
         "passport-local": "*",
         "passport-local-mongoose": "*",
-        "should": "*"
+        "should": "*",
+        "uuid": "*"
     },
     "repository": {
         "type": "git",
