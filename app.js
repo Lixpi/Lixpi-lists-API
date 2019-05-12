@@ -7,10 +7,12 @@ const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const User = require("./models/account")
 
 const users = [
   {id: '2f24vvg', email: 'test@test.com', password: 'password'}
 ]
+
 
 // configure passport.js to use the local strategy
 passport.use(new LocalStrategy(
@@ -51,7 +53,7 @@ var sessionStore = new MongoStore({
     url: 'mongodb://mongodb:27017/lists'
 });
 
-mongoose.connect('mongodb://localhost/lists')
+mongoose.connect('mongodb://mongodb/lists')
 
 // add & configure middleware
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -108,6 +110,93 @@ app.get('/authrequired', (req, res) => {
     res.redirect('/')
   }
 })
+
+app.set('view engine', 'html');
+
+// handeling user sign up
+app.post("/register", function(req, res){
+    console.log(req.body);
+    console.log('ffffffffffffffffffffffffffffffffffffff')
+    // User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+    //     console.log('ssssssssssssssssssssssssssssssssssss')
+    //     if(err){
+    //         console.log('errrrrrrrrrrrrrrrrrrrrrr')
+    //         console.log(err);
+    //         // return res.render("register");
+    //     }
+    //     // passport.authenticate("local")(req, res, function(){
+    //     //     res.redirect("/authrequired");
+    //     // });
+    // });
+
+    // Users=new User({email: 'asef@df.com', username : req.body.username});
+
+    //       User.register(Users, req.body.password, function(err, user) {
+    //         if (err) {
+    //           res.json({success:false, message:"Your account could not be saved. Error: ", err})
+    //         }else{
+    //           res.json({success: true, message: "Your account has been saved"})
+    //         }
+    //       });
+
+
+    User.register(new User({ username : req.body.username, email: 'sdf@dfdf.com' }), req.body.password, function(err, account) {
+        console.log('  0000000000000000 account')
+        console.log(account)
+         if (err) {
+          res.json({success:false, message:"Your account could not be saved. Error: ", err})
+        }else{
+          res.json({success: true, message: "Your account has been saved"})
+        }
+
+        passport.authenticate('local')(req, res, function () {
+          res.redirect('/');
+        });
+    });
+
+
+})
+
+// // handeling user sign up
+// app.post("/register", function(req, res){
+//     // console.log(req.body.username);
+//     // console.log(req.body.password);
+//     console.log('---------------------')
+//     console.log(req.body)
+
+//     // create the user
+//     let newUser            = new User();
+
+//     console.log(' ------------------------- newUser');
+//     console.log(newUser);
+
+//     // set the user's local credentials
+//     newUser.username    = req.body.username;
+//     newUser.password = req.body.password;
+
+//     console.log(' ------------------------- newUser 2');
+//     console.log(newUser);
+
+//     // // save the user
+//     newUser.save(function(err) {
+//     if (err)
+//         throw err;
+//         return done(null, newUser);
+//     });
+
+
+
+//     // User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+//     //     console.log('sadfasdfasdf')
+//     //     if(err){
+//     //         console.log(err);
+//     //         return res.render("register");
+//     //     }
+//     //     passport.authenticate("local")(req, res, function(){
+//     //         res.redirect("/authrequired");
+//     //     });
+//     // });
+// });
 
 // tell the server what port to listen on
 app.listen(3000, () => {
