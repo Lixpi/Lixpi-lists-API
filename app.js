@@ -1,18 +1,19 @@
-//npm modules
-const express = require('express');
-const uuid = require('uuid/v4')
-const session = require('express-session')
-const mongoose = require('mongoose')
-const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
+const uuid = require('uuid/v4')
+
+const express = require('express');
+const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+
+const mongoose = require('mongoose')
+const MongoStore = require('connect-mongo')(session)
+
 const User = require("./models/account")
 
 const users = [
   {id: '2f24vvg', email: 'test@test.com', password: 'password'}
 ]
-
 
 // configure passport.js to use the local strategy
 passport.use(new LocalStrategy(
@@ -79,13 +80,6 @@ app.get('/', (req, res) => {
   res.send(`You hit home page!\n`)
 })
 
-// create the login get and post routes
-app.get('/login', (req, res) => {
-  console.log('Inside GET /login callback function')
-  console.log(req.sessionID)
-  res.send(`You got the login page!\n`)
-})
-
 app.post('/login', (req, res, next) => {
   console.log('Inside POST /login callback')
   passport.authenticate('local', (err, user, info) => {
@@ -115,34 +109,7 @@ app.set('view engine', 'html');
 
 // handeling user sign up
 app.post("/register", function(req, res){
-    console.log(req.body);
-    console.log('ffffffffffffffffffffffffffffffffffffff')
-    // User.register(new User({username: req.body.username}), req.body.password, function(err, user){
-    //     console.log('ssssssssssssssssssssssssssssssssssss')
-    //     if(err){
-    //         console.log('errrrrrrrrrrrrrrrrrrrrrr')
-    //         console.log(err);
-    //         // return res.render("register");
-    //     }
-    //     // passport.authenticate("local")(req, res, function(){
-    //     //     res.redirect("/authrequired");
-    //     // });
-    // });
-
-    // Users=new User({email: 'asef@df.com', username : req.body.username});
-
-    //       User.register(Users, req.body.password, function(err, user) {
-    //         if (err) {
-    //           res.json({success:false, message:"Your account could not be saved. Error: ", err})
-    //         }else{
-    //           res.json({success: true, message: "Your account has been saved"})
-    //         }
-    //       });
-
-
     User.register(new User({ username : req.body.username, email: 'sdf@dfdf.com' }), req.body.password, function(err, account) {
-        console.log('  0000000000000000 account')
-        console.log(account)
          if (err) {
           res.json({success:false, message:"Your account could not be saved. Error: ", err})
         }else{
@@ -153,52 +120,8 @@ app.post("/register", function(req, res){
           res.redirect('/');
         });
     });
-
-
 })
 
-// // handeling user sign up
-// app.post("/register", function(req, res){
-//     // console.log(req.body.username);
-//     // console.log(req.body.password);
-//     console.log('---------------------')
-//     console.log(req.body)
-
-//     // create the user
-//     let newUser            = new User();
-
-//     console.log(' ------------------------- newUser');
-//     console.log(newUser);
-
-//     // set the user's local credentials
-//     newUser.username    = req.body.username;
-//     newUser.password = req.body.password;
-
-//     console.log(' ------------------------- newUser 2');
-//     console.log(newUser);
-
-//     // // save the user
-//     newUser.save(function(err) {
-//     if (err)
-//         throw err;
-//         return done(null, newUser);
-//     });
-
-
-
-//     // User.register(new User({username: req.body.username}), req.body.password, function(err, user){
-//     //     console.log('sadfasdfasdf')
-//     //     if(err){
-//     //         console.log(err);
-//     //         return res.render("register");
-//     //     }
-//     //     passport.authenticate("local")(req, res, function(){
-//     //         res.redirect("/authrequired");
-//     //     });
-//     // });
-// });
-
-// tell the server what port to listen on
 app.listen(3000, () => {
   console.log('Listening on localhost:3000')
 })
