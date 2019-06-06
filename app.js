@@ -9,7 +9,7 @@ const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 
-const User = require("./models/account")
+const User = require("./user/model")
 
 const users = [{
     id: '2f24vvg',
@@ -87,6 +87,12 @@ app.get('/', (req, res) => {
     res.send(`You hit home page!\n`)
 })
 
+app.get('/ping', (req, res) => {
+    console.log('Inside the ping callback function')
+    console.log(req.sessionID)
+    res.send(`Ping!\n`)
+})
+
 app.post('/login', (req, res, next) => {
     console.log('Inside POST /login callback')
     passport.authenticate('local', (err, user, info) => {
@@ -102,11 +108,11 @@ app.post('/login', (req, res, next) => {
     })(req, res, next);
 })
 
-app.get('/authrequired', (req, res) => {
+app.get('/testauthrequired', (req, res) => {
     console.log('Inside GET /authrequired callback')
     console.log(`User authenticated? ${req.isAuthenticated()}`)
     if (req.isAuthenticated()) {
-        res.send('you hit the authentication endpoint\n')
+        res.send('You hit the authenticated endpoint\n')
     } else {
         res.redirect('/')
     }
