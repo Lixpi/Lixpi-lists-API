@@ -9,7 +9,7 @@ const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 
-const User = require("./user/model")
+const User = require("./users/model")
 
 const users = [{
     id: '2f24vvg',
