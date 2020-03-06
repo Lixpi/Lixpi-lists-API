@@ -8,7 +8,7 @@ services:
         command: npm run dev
         ports:
             - 1234:1234
-            - 3000:3000
+            - 3001:3000
     mongodb:
         command: mongod
         container_name: mongodb
