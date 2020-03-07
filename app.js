@@ -23,7 +23,11 @@ mongoose.connect('mongodb://mongodb/lists')
 // add & configure middleware
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
+
 
 app.use(
     session({
@@ -52,16 +56,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/ping', (req, res) => {
-    console.log('asdfasdfasdfakhagskjdfhaksjdhfkjasdhfjkashfkjs')
-    // res.send(`Ping!\n`)
     res.json({
         message: 'Ping!'
     })
 })
 
 app.post('/login', (req, res, next) => {
-    console.log('req.body')
-    console.log(req.body)
+    console.log('req***********************************************************************************************************************')
+    console.log(req)
     User.authenticate()(req.body.username, req.body.password, function(err, result) {
         if (!result) {
             res.status(401).json({
