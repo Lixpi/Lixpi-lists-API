@@ -24,29 +24,18 @@ mongoose.connect('mongodb://mongodb/lists')
 app.use(express.json());
 
 app.use(cors());
-// app.options('*', cors())
 
-// app.use(cors({
-//   origin: 'http://localhost:3000'
-// }));
-
-
-// app.all('/*', function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   next();
-// });
-
-
-app.use(session({
-    genid: (req) => {
-        return uuid() // use UUIDs for session IDs
-    },
-    store: sessionStore,
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true
-}))
+app.use(
+    session({
+        genid: (req) => {
+            return uuid() // use UUIDs for session IDs
+        },
+        store: sessionStore,
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true
+    })
+)
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -74,25 +63,22 @@ app.post('/login', (req, res, next) => {
     console.log('req.body')
     console.log(req.body)
     User.authenticate()(req.body.username, req.body.password, function(err, result) {
-        console.log('result---------------------')
-        console.log(result)
         if (!result) {
-            res.send(401, {
-                message: 'Invalid credentials!'
+            res.status(401).json({
+                error: {
+                    code: 401,
+                    message: 'Invalid credentials!'
+                }
             })
-            // res.json({
-            //     message: 'Invalid credentials!'
-            // })
         }
         req.login(result, (err) => {
-            res.send(200, {
-                message: 'You were authenticated & logged in!'
+            res.status(200).json({
+                success: {
+                    code: 200,
+                    message: 'You were authenticated & logged in!'
+                }
             })
-            // res.json({
-            //     message: 'You were authenticated & logged in!'
-            // })
         })
-        // return res.send('Welcome!')
     });
 })
 
