@@ -62,8 +62,6 @@ app.get('/ping', (req, res) => {
 })
 
 app.post('/login', (req, res, next) => {
-    console.log('req***********************************************************************************************************************')
-    console.log(req)
     User.authenticate()(req.body.username, req.body.password, function(err, result) {
         if (!result) {
             res.status(401).json({
