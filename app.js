@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const User = require("./users/model")
+const Task = require("./tasks/model")
 
 const sessionStore = new MongoStore({
     host: 'mongodb',
@@ -53,6 +54,35 @@ passport.deserializeUser(User.deserializeUser());
 // Routes ***************************************************************************
 app.get('/', (req, res) => {
     res.send(`You hit home page!\n`)
+})
+
+app.post('/tasks', (req, res, next) => {
+    const currentTimestamp = new Date().getTime()
+    let task = new Task({
+        key: "TAS-1",
+        title: req.body.title,
+        description: req.body.description,
+        type: req.body.type,
+        status: req.body.status,
+        priority: req.body.priority,
+        version: req.body.version,
+        labels: req.body.labels,
+        author: req.user,
+        timeTracking: req.body.timeTracking,
+        dueAt: req.body.dueAt,
+        timestamps: {
+            createdAt: currentTimestamp,
+            updatedAt: currentTimestamp
+        }
+    })
+
+    task.save()
+       .then(doc => {
+         res.status(200).json({result: 'Task created successfully.'})
+       })
+       .catch(err => {
+         res.status(400).json({result: 'Wrong input data sent.'})
+       })
 })
 
 app.get('/ping', (req, res) => {
@@ -107,10 +137,6 @@ app.post('/register', (req, res, next) => {
             })
         }
         User.authenticate()(req.body.username, req.body.password, function(err, result) {
-            if (err) {
-                console.log('err')
-                console.log(err)
-            }
             if (!result) {
                 res.send('Something is wrong')
             }
