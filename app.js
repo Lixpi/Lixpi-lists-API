@@ -84,14 +84,15 @@ app.post('/login', (req, res, next) => {
 
 app.get('/logout', (req, res, next) => {
     req.logout()
-    res.redirect('/')
+    req.session.destroy()
+    res.status(401).json({result: 'Logged out!'})
 })
 
-app.get('/testauthrequired', (req, res) => {
+app.get('/testauth', (req, res, next) => {
     if (req.isAuthenticated()) {
-        res.send('Authenticated')
+        res.status(200).json({result: 'Authenticated'})
     } else {
-        res.send('Unauthenticated')
+        res.status(401).json({result: 'Unauthenticated'})
     }
 })
 
