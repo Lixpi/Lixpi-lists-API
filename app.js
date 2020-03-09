@@ -85,6 +85,17 @@ app.post('/tasks', (req, res, next) => {
        })
 })
 
+app.get('/tasks', (req, res, next) => {
+    tasks = Task.find()
+        .exec()
+        .then(tasks => {
+            res.status(200).json({tasks})
+        })
+        .catch(err => {
+            res.status(400).json({result: 'Data error.'})
+        })
+})
+
 app.get('/ping', (req, res) => {
     res.json({
         message: 'Ping!'
