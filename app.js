@@ -57,6 +57,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/tasks', (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).json({result: 'Unauthenticated'})
+    }
     const currentTimestamp = new Date().getTime()
     let task = new Task({
         key: "TAS-1",
@@ -86,6 +89,9 @@ app.post('/tasks', (req, res, next) => {
 })
 
 app.get('/tasks', (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).json({result: 'Unauthenticated'})
+    }
     tasks = Task.find()
         .exec()
         .then(tasks => {
