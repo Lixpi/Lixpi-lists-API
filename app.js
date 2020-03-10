@@ -89,10 +89,21 @@ app.get('/tasks', (req, res, next) => {
     tasks = Task.find()
         .exec()
         .then(tasks => {
-            res.status(200).json({tasks})
+            res.status(200).json(tasks)
         })
         .catch(err => {
-            res.status(400).json({result: 'Data error.'})
+            res.status(400).json({result: 'Data error'})
+        })
+})
+
+app.get('/task/:key', (req, res, next) => {
+    task = Task.findOne({key: req.params.key})
+        .exec()
+        .then(task => {
+            res.status(200).json(task)
+        })
+        .catch(err => {
+            res.status(400).json({result: 'Data error'})
         })
 })
 
