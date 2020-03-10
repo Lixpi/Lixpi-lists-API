@@ -103,6 +103,9 @@ app.get('/tasks', (req, res, next) => {
 })
 
 app.get('/task/:key', (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).json({result: 'Unauthenticated'})
+    }
     task = Task.findOne({key: req.params.key})
         .exec()
         .then(task => {
