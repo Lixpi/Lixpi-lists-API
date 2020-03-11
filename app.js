@@ -106,14 +106,23 @@ app.get('/task/:key', (req, res, next) => {
     if (!req.isAuthenticated()) {
         res.status(401).json({result: 'Unauthenticated'})
     }
-    task = Task.findOne({key: req.params.key})
+    const task = Task.findOne({key: req.params.key})
         .exec()
-        .then(task => {
-            res.status(200).json(task)
-        })
         .catch(err => {
             res.status(400).json({result: 'Data error'})
         })
+
+    task.then(task => {
+        const author = User.findById(task.author)
+          .exec()
+          .then(author => {
+              task.author = author
+              res.status(200).json(task)
+          })
+          .catch(err => {
+              res.status(400).json({result: 'Data error'})
+          })
+    })
 })
 
 app.get('/ping', (req, res) => {
