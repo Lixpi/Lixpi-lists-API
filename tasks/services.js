@@ -1,8 +1,11 @@
 'use strict';
 
-const Task = require("./model");
-const User = require("../users/model")
+const Task = require('./model');
+const User = require('../users/model')
 
-module.exports = function getTask (key) {
-    return Task.findOne({key})
+module.exports = async function getTask (key) {
+    const task = await Task.findOne({key}).exec()
+    const user = await User.findById(task.author)
+    task.author = user
+    return task
 };
