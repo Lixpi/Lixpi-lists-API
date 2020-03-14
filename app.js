@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const User = require("./users/model")
 const Task = require("./tasks/model")
+const getTask = require("./tasks/services")
 
 const sessionStore = new MongoStore({
     host: 'mongodb',
@@ -102,27 +103,12 @@ app.get('/tasks', (req, res, next) => {
         })
 })
 
-app.get('/task/:key', (req, res, next) => {
+app.get('/task/:key', async (req, res, next) => {
     if (!req.isAuthenticated()) {
         res.status(401).json({result: 'Unauthenticated'})
     }
-    const task = Task.findOne({key: req.params.key})
-        .exec()
-        .catch(err => {
-            res.status(400).json({result: 'Data error'})
-        })
-
-    task.then(task => {
-        const author = User.findById(task.author)
-          .exec()
-          .then(author => {
-              task.author = author
-              res.status(200).json(task)
-          })
-          .catch(err => {
-              res.status(400).json({result: 'Data error'})
-          })
-    })
+    const task = await getTask(req.params.key)
+    res.status(200).json(task)
 })
 
 app.get('/ping', (req, res) => {
