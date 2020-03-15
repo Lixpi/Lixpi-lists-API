@@ -4,31 +4,35 @@
     "description": "Lists API",
     "main": "app.js",
     "scripts": {
+        "manualTest": "node_modules/mocha/bin/_mocha",
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon app.js",
         "devInspect": "nodemon --inspect=0.0.0.0:9229 app.js"
     },
     "dependencies": {
         "body-parser": "*",
-        "chai": "*",
         "connect-flash": "*",
         "connect-mongo": "*",
         "cookie-parser": "*",
-        "cors": "^2.8.5",
-        "debug": "*",
+        "cors": "*",
         "express": "*",
         "express-session": "*",
-        "mocha": "*",
         "mongoose": "*",
         "morgan": "*",
-        "nodemon": "*",
         "passport": "*",
         "passport-local": "*",
         "passport-local-mongoose": "*",
+        "uuid": "*"
+    },
+    "devDependencies": {
+        "chai": "*",
+        "debug": "*",
+        "mocha": "*",
+        "mongodb-memory-server": "*",
+        "nodemon": "*",
         "should": "*",
         "sinon": "*",
-        "sinon-test": "*",
-        "uuid": "*"
+        "sinon-test": "*"
     },
     "repository": {
         "type": "git",

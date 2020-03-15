@@ -71,7 +71,7 @@ app.post('/tasks', (req, res, next) => {
         priority: req.body.priority,
         version: req.body.version,
         labels: req.body.labels,
-        author: req.user,
+        author: req.user._id,
         timeTracking: req.body.timeTracking,
         dueAt: req.body.dueAt,
         timestamps: {
