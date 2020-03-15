@@ -20,7 +20,7 @@ const sessionStore = new MongoStore({
 // create the server
 const app = express();
 
-mongoose.connect('mongodb://mongodb/lists')
+mongoose.connect('mongodb://mongodb/lists', { useNewUrlParser: true })
 
 // add & configure middleware
 app.use(express.json());
