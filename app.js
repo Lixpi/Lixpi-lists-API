@@ -6,8 +6,10 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
+
 const User = require("./users/model")
 const Task = require("./tasks/model")
+const authMiddleware = require("./middleware/auth")
 const { getTask, getTasks } = require("./tasks/services")
 
 const sessionStore = new MongoStore({
@@ -58,9 +60,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/tasks', (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        res.status(401).json({result: 'Unauthenticated'})
-    }
+    authMiddleware(req, res)
     const currentTimestamp = new Date().getTime()
     let task = new Task({
         key: "TAS-1",
@@ -90,17 +90,13 @@ app.post('/tasks', (req, res, next) => {
 })
 
 app.get('/tasks', async (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        res.status(401).json({result: 'Unauthenticated'})
-    }
+    authMiddleware(req, res)
     const tasks = await getTasks()
     res.status(200).json(tasks)
 })
 
 app.get('/task/:key', async (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        res.status(401).json({result: 'Unauthenticated'})
-    }
+    authMiddleware(req, res)
     const task = await getTask(req.params.key)
     res.status(200).json(task)
 })
