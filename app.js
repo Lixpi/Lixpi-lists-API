@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const User = require("./users/model")
 const Task = require("./tasks/model")
-const getTask = require("./tasks/services")
+const { getTask, getTasks } = require("./tasks/services")
 
 const sessionStore = new MongoStore({
     host: 'mongodb',
@@ -89,18 +89,12 @@ app.post('/tasks', (req, res, next) => {
        })
 })
 
-app.get('/tasks', (req, res, next) => {
+app.get('/tasks', async (req, res, next) => {
     if (!req.isAuthenticated()) {
         res.status(401).json({result: 'Unauthenticated'})
     }
-    tasks = Task.find()
-        .exec()
-        .then(tasks => {
-            res.status(200).json(tasks)
-        })
-        .catch(err => {
-            res.status(400).json({result: 'Data error'})
-        })
+    const tasks = await getTasks()
+    res.status(200).json(tasks)
 })
 
 app.get('/task/:key', async (req, res, next) => {
