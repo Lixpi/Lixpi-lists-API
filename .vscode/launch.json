@@ -10,32 +10,32 @@
         "name": "Mocha Tests",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [
-          "-u",
-          "bdd",
-          "--timeout",
-          "999999",
-          "--colors",
-          "${workspaceFolder}/test"
+            "-u",
+            "bdd",
+            "--timeout",
+            "10000",
+            "--colors",
+            "${workspaceFolder}/test"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": [
-          "<node_internals>/**"
+            "<node_internals>/**"
         ]
       },
       {
         "type": "node",
         "request": "attach",
         "name": "Attach to Docker",
-        "protocol":"auto",
+        "protocol": "auto",
         "port": 9229,
         "restart": true,
         "localRoot": "${workspaceFolder}",
         "remoteRoot": "/usr/src/service",
         "outFiles": [
-          "${workspaceFolder}/*.js"
+            "${workspaceFolder}/*.js"
         ],
         "skipFiles": [
-          "<node_internals>/**/*.js",
+            "<node_internals>/**/*.js",
         ]
       }
     ]
