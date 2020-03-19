@@ -4,7 +4,7 @@ const { expect } = require('chai')
 
 const Task = require('./model');
 const User = require('../users/model')
-const { getTask, getTasks } = require("./services")
+const { createTask, getTask, getTasks } = require("./services")
 
 let mongoServer
 
@@ -50,5 +50,33 @@ describe('Task CRUD operations', () => {
         tasks.forEach((task) => {
             expect(task.author.username).to.equal('testuser')
         });
+    });
+
+    it('Should save task and return the new task including author', async () => {
+        const newTaskData = {
+            title: 'Title',
+            description: 'Description',
+            type: 'Type',
+            status: 'Status',
+            priority: 'Priority',
+            version: 'Version',
+            labels: [
+                {
+                    color: 'Color 1',
+                    title: 'Label Title 1'
+                },
+                {
+                    color: 'Color 2',
+                    title: 'Label Title 2'
+                }
+            ],
+            author: mockUser._id,
+            timeTracking: {
+                estimated: 500,
+                spent: 200
+            },
+            dueAt: 1583687295554
+        }
+        const task = await createTask(newTaskData)
     });
 });

@@ -10,7 +10,7 @@ const MongoStore = require('connect-mongo')(session)
 const User = require("./users/model")
 const Task = require("./tasks/model")
 const authMiddleware = require("./middleware/auth")
-const { getTask, getTasks } = require("./tasks/services")
+const { createTask, getTask, getTasks } = require("./tasks/services")
 
 const sessionStore = new MongoStore({
     host: 'mongodb',
@@ -59,11 +59,9 @@ app.get('/', (req, res) => {
     res.send(`You hit home page!\n`)
 })
 
-app.post('/tasks', (req, res, next) => {
+app.post('/tasks', async (req, res, next) => {
     authMiddleware(req, res)
-    const currentTimestamp = new Date().getTime()
-    let task = new Task({
-        key: "TAS-1",
+    const newTaskData = {
         title: req.body.title,
         description: req.body.description,
         type: req.body.type,
@@ -73,20 +71,10 @@ app.post('/tasks', (req, res, next) => {
         labels: req.body.labels,
         author: req.user._id,
         timeTracking: req.body.timeTracking,
-        dueAt: req.body.dueAt,
-        timestamps: {
-            createdAt: currentTimestamp,
-            updatedAt: currentTimestamp
-        }
-    })
-
-    task.save()
-       .then(doc => {
-         res.status(200).json({result: 'Task created successfully.'})
-       })
-       .catch(err => {
-         res.status(400).json({result: 'Wrong input data sent.'})
-       })
+        dueAt: req.body.dueAt
+    }
+    const task = await createTask(newTaskData)
+    res.status(200).json(task)
 })
 
 app.get('/tasks', async (req, res, next) => {
