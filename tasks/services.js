@@ -16,8 +16,7 @@ const getTasks = async function getTasks () {
     return tasks
 };
 
-const createTask = async function createTask (newTaskData) {
-    const currentTimestamp = new Date().getTime()
+const createTask = async function createTask (newTaskData, currentTimestamp = new Date().getTime()) {
     const newKey = 'KEY-1'
     const mergedTaskData = Object.assign({}, 
         { key: newKey },
