@@ -1,6 +1,7 @@
 version: '3'
 services:
-    dev:
+    api:
+        container_name: api
         image: node:13
         volumes:
             - .:/usr/src/service
@@ -8,7 +9,7 @@ services:
         command: npm run devInspect
         ports:
             - 1234:1234
-            - 3001:3000
+            - 3005:3000
             - 9229:9229
     mongodb:
         command: mongod
@@ -20,6 +21,18 @@ services:
             - 27017:27017
         volumes:
             - mongodata:/data/db
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8087:8080
 
 volumes:
     mongodata:
