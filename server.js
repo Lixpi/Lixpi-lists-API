@@ -5,11 +5,9 @@ const cors = require('cors')
 const uuid = require('uuid/v4')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-// const mongoose = require('mongoose')
 const { Sequelize } = require('sequelize');
 const sequelize = require('./db/sequelize-singleton');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-// const MongoStore = require('connect-mongo')(session)
 
 
 const userQueries = require('./users/services');
@@ -23,17 +21,8 @@ const testAuthRoute = require('./routes/testauth')
 const registerRoute = require('./routes/register')
 
 
-// const sessionStore = new MongoStore({
-//     host: 'mongodb',
-//     port: '27017',
-//     db: 'lists',
-//     url: 'mongodb://mongodb:27017/lists'
-// });
-
 // create the server
 const app = express();
-
-// mongoose.connect('mongodb://mongodb/lists', { useNewUrlParser: true })
 
 // add & configure middleware
 app.use(express.json());
@@ -42,28 +31,6 @@ app.use(express.json());
 //     origin: 'http://localhost:3000',
 //     credentials: true
 // }));
-
-
-// app.use(
-//     session({
-//         genid: (req) => {
-//             return uuid() // use UUIDs for session IDs
-//         },
-//         store: sessionStore,
-//         secret: 'keyboard cat',
-//         resave: false,
-//         saveUninitialized: true
-//     })
-// )
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// passport.use(new LocalStrategy(User.authenticate()));
-
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-
 
 // TODO temporary db init
 const { User } = require("./users/model");
