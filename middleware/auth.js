@@ -23,7 +23,7 @@ module.exports.authenticate = (req, res, next) => new Promise((resolve, reject) 
 
         return resolve(user);
     })(req, res, next);
-});
+})
 
 
 /**
@@ -34,12 +34,12 @@ module.exports.authenticate = (req, res, next) => new Promise((resolve, reject) 
 module.exports.login = (req, user) => new Promise((resolve, reject) => {
     req.login(user, (err) => {
         if (err) {
-            return reject(err);
+            return reject(err)
         }
 
-        return resolve();
-    });
-});
+        return resolve()
+    })
+})
 
 /**
  * Regenerate user session.
@@ -48,12 +48,12 @@ module.exports.login = (req, user) => new Promise((resolve, reject) => {
 module.exports.regenerateSession = req => new Promise((resolve, reject) => {
     req.session.regenerate((err) => {
         if (err) {
-            return reject(err);
+            return reject(err)
         }
 
-        return resolve();
-    });
-});
+        return resolve()
+    })
+})
 
 /**
  * Save user session.
@@ -62,9 +62,9 @@ module.exports.regenerateSession = req => new Promise((resolve, reject) => {
 module.exports.saveSession = req => new Promise((resolve, reject) => {
     req.session.save((err) => {
         if (err) {
-            return reject(err);
+            return reject(err)
         }
 
-        return resolve();
-    });
+        return resolve()
+    })
 });
