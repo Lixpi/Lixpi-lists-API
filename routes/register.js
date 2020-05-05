@@ -6,7 +6,7 @@ const { User } = require("../users/model")
 module.exports.post = async (req, res) => {
 
 
-    await User.create({ name: req.body.username, email: req.body.username, password: req.body.password })
+    await User.create({ username: req.body.username, password: req.body.password })
         .then(() => {
             return res.send('User is created');
         })
