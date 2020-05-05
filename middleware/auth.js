@@ -15,7 +15,7 @@ module.exports = async function authMiddleware(req, res) {
 * @param {Object} res
 * @param {Function} next
 */
-module.exports.authenticate = (req, res, next) => new Promise((resolve, reject) => {
+const authenticate = (req, res, next) => new Promise((resolve, reject) => {
     passport.authenticate('local', (err, user) => {
         if (err) {
             return reject(err);
@@ -31,7 +31,7 @@ module.exports.authenticate = (req, res, next) => new Promise((resolve, reject) 
 * @param {Object} req
 * @param {Object} user
 */
-module.exports.login = (req, user) => new Promise((resolve, reject) => {
+const login = (req, user) => new Promise((resolve, reject) => {
     req.login(user, (err) => {
         if (err) {
             return reject(err)
@@ -45,7 +45,7 @@ module.exports.login = (req, user) => new Promise((resolve, reject) => {
  * Regenerate user session.
  * @param {Object} req
  */
-module.exports.regenerateSession = req => new Promise((resolve, reject) => {
+const regenerateSession = req => new Promise((resolve, reject) => {
     req.session.regenerate((err) => {
         if (err) {
             return reject(err)
@@ -59,7 +59,7 @@ module.exports.regenerateSession = req => new Promise((resolve, reject) => {
  * Save user session.
  * @param {Object} req
  */
-module.exports.saveSession = req => new Promise((resolve, reject) => {
+const saveSession = req => new Promise((resolve, reject) => {
     req.session.save((err) => {
         if (err) {
             return reject(err)
@@ -68,3 +68,21 @@ module.exports.saveSession = req => new Promise((resolve, reject) => {
         return resolve()
     })
 });
+
+module.exports.authenticateWithSession = (req, res, next) => new Promise(async (resolve, reject) => {
+    const user = await authenticate(req, res, next)
+
+    if (!user) {
+        return reject('Invalid credentials.')
+    }
+
+    await login(req, user)
+    const temp = req.session.passport
+
+    await regenerateSession(req)
+    req.session.passport = temp
+
+    await saveSession(req)
+
+    return resolve('You were authenticated & logged in.')
+})
