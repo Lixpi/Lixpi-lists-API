@@ -11,14 +11,9 @@ const mappings = {
         primaryKey: true,
         defaultValue: Sequelize.DataTypes.UUIDV4,
     },
-    name: {
+    username: {
         type: Sequelize.TEXT,
         allowNull: false,
-    },
-    email: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        unique: true,
     },
     password: {
         type: Sequelize.TEXT,
@@ -34,9 +29,9 @@ const User = sequelize.define('User', mappings, {
             fields: ['userId'],
         },
         {
-            name: 'user_email_index',
+            name: 'user_username_index',
             method: 'BTREE',
-            fields: ['email'],
+            fields: ['username'],
         },
     ],
 });
@@ -52,7 +47,7 @@ User.prototype.comparePassword = function (password) { // eslint-disable-line fu
 };
 
 User.beforeSave((user) => {
-    user.name = _.trim(user.name);
+    user.username = _.trim(user.username);
 
     if ((user.previous('password') !== user.password) && (!_.isEmpty(user.password))) {
         const salt = bcrypt.genSaltSync(10);

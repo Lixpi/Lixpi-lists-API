@@ -8,9 +8,10 @@ const LocalStrategy = require('passport-local').Strategy
 // const mongoose = require('mongoose')
 const { Sequelize } = require('sequelize');
 const sequelize = require('./db/sequelize-singleton');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 // const MongoStore = require('connect-mongo')(session)
 
-const User = require("./users/model")
+
 const userQueries = require('./users/services');
 
 const indexRoute = require('./routes/index')
@@ -64,40 +65,66 @@ app.use(express.json());
 // passport.deserializeUser(User.deserializeUser());
 
 
+// TODO temporary db init
+const { User } = require("./users/model");
+const { Session } = require("./session/model");
+(async () => {
+  await User.sync({ alter: true })
+  await Session.sync({ alter: true })
+})
+// () // Uncomment to call init db func
 
 
-module.exports = (passport) => {
+const passportConfig = (passport) => {
     passport.serializeUser((user, done) => {
       done(null, user.userId);
     });
- 
+
     passport.deserializeUser((id, done) => Bluebird.resolve()
       .then(async () => {
         const user = await userQueries.getUserById(id);
- 
+
         done(null, user);
       })
       .catch(done));
- 
+
     passport.use('local', new LocalStrategy(
       {
-        usernameField: 'email',
+        usernameField: 'username',
         passwordField: 'password',
         passReqToCallback: true,
       },
-      (req, email, password, done) => Bluebird.resolve()
+      (req, username, password, done) => Bluebird.resolve()
         .then(async () => {
-          const user = await userQueries.getUserByEmail(email);
- 
+          const user = await userQueries.getUserByUsername(username);
+
           if (!user || !await user.comparePassword(password)) {
             return done(null, null);
           }
- 
+
           return done(null, user);
         })
         .catch(done),
     ));
   };
+
+
+
+  passportConfig(passport);
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 1 month
+    },
+    store: new SequelizeStore({
+      db: sequelize,
+      table: 'Session',
+   }),
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 
 
 // Routes ******************************************
