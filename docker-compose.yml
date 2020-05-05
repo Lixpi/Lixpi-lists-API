@@ -10,16 +10,6 @@ services:
         ports:
             - 1234:1234
             - 3005:3000
-    mongodb:
-        command: mongod
-        container_name: mongodb
-        environment:
-            - MONGO_DATA_DIR=/data/db
-        image: mongo:latest
-        ports:
-            - 27017:27017
-        volumes:
-            - mongodata:/data/db
     postgres:
         image: postgres
         restart: always
@@ -37,29 +27,5 @@ services:
         ports:
             - 8087:8080
 
-    # neo4j:
-    #     command: neo4j
-    #     container_name: neo4j
-    #     image: neo4j:latest
-    #     ports:
-    #         - 7474:7474
-    #         - 7687:7687
-    #     volumes:
-    #         - neo4jdata:/data
-
-    # neo4j-browser:
-    #     restart: always
-    #     image: neo4j-browser
-    #     container_name: neo4j-browser
-    #     ports:
-    #         - "8085:8080"
-    #     # links:
-    #     #     - gateway-mysql
-    #     depends_on:
-    #         - neo4j
-
-
 volumes:
-    mongodata:
-    neo4jdata:
     pgdata:
