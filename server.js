@@ -10,7 +10,7 @@ const sequelize = require('./db/sequelize-singleton');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 
-const userQueries = require('./users/services');
+const userQueries = require('./user/services');
 
 const indexRoute = require('./routes/index')
 const tasksRoute = require('./routes/tasks/tasks')
@@ -33,14 +33,32 @@ app.use(express.json());
 // }));
 
 // TODO temporary db init
-const { User } = require("./users/model");
-const { Session } = require("./session/model");
+const { User } = require('./user/model');
+const { Session } = require('./session/model');
+const { Label } = require('./label/model');
+const { Task, TaskLabel } = require('./task/model');
 (async () => {
   await User.sync({ alter: true })
   await Session.sync({ alter: true })
+  await Task.sync({ alter: true })
+  await Label.sync({ alter: true })
 })
 // () // Uncomment to call init db func
 
+
+
+const temp = async() => {
+    await Task.create({ 
+        key: 'key2', 
+        title: 'title',
+        description: '',
+        labels: [{'title': 'label1', 'color': 'red'}, {'title': 'label2', 'color': 'green'}]
+    },
+    {
+        include: [ TaskLabel ]
+    })
+}
+temp()
 
 const passportConfig = (passport) => {
     passport.serializeUser((user, done) => {
