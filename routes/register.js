@@ -1,6 +1,6 @@
 'use strict';
 
-const { User } = require("../users/model")
+const { User } = require("../user/model")
 const { authenticateWithSession } = require("../middleware/auth")
 
 module.exports.post = async (req, res, next) => {
