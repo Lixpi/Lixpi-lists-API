@@ -4,18 +4,13 @@ const Sequelize = require('sequelize');
 const sequelize = require('../db/sequelize-singleton');
 
 const mappings = {
-    id: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        defaultValue: Sequelize.DataTypes.UUIDV4,
-    },
     color: {
         type: Sequelize.TEXT,
         allowNull: false,
     },
     title: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        primaryKey: true,
     }
 }
 

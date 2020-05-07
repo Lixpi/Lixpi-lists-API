@@ -42,21 +42,19 @@ const { Task, TaskLabel } = require('./task/model');
   await Session.sync({ alter: true })
   await Task.sync({ alter: true })
   await Label.sync({ alter: true })
+  await TaskLabel.sync({ alter: true })
 })
 // () // Uncomment to call init db func
 
 
 
 const temp = async() => {
-    await Task.create({ 
-        key: 'key2', 
-        title: 'title',
-        description: '',
-        labels: [{'title': 'label1', 'color': 'red'}, {'title': 'label2', 'color': 'green'}]
-    },
-    {
-        include: [ TaskLabel ]
-    })
+    Promise.all([
+        Task.create({ key: 'key2', title: 'title',description: ''}),
+        Label.create({ title: 'label1', color: 'red' }),
+        Label.create({ title: 'label2', color: 'green' })
+    ])
+    .then(([task, label1, label2]) => TaskLabel.create({TaskKey: task.key, LabelId: label1.title}))
 }
 temp()
 
