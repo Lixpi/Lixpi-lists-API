@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const Sequelize = require('sequelize');
+const _ = require('lodash')
+const Sequelize = require('sequelize')
 
-const sequelize = require('../db/sequelize-singleton');
-const { Label } = require('../label/model');
+const sequelize = require('../db/sequelize-singleton')
+const { Label } = require('../label/model')
 
 const mappings = {
     key: {
@@ -34,7 +34,7 @@ const mappings = {
     //     type: Sequelize.TEXT,
     //     allowNull: true,
     // },
-};
+}
 
 const Task = sequelize.define('Task', mappings, {
     indexes: [
@@ -44,12 +44,29 @@ const Task = sequelize.define('Task', mappings, {
             fields: ['title'],
         },
     ],
-});
+})
 
-const TaskLabel = Task.hasMany(Label, { as: 'labels' });
+const TaskLabel = sequelize.define('TaskLabel', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
+    selfGranted: Sequelize.BOOLEAN
+  }, { timestamps: false })
 
-exports.TaskLabel = TaskLabel;
-exports.Task = Task;
+
+Task.belongsToMany(Label, { through: TaskLabel })
+Label.belongsToMany(Task, { through: TaskLabel })
+
+Task.hasMany(TaskLabel)
+TaskLabel.belongsTo(Task)
+Label.hasMany(TaskLabel)
+TaskLabel.belongsTo(Label)
+
+exports.TaskLabel = TaskLabel
+exports.Task = Task
 
 // let TaskSchema = new mongoose.Schema({
 //     key: String,
