@@ -2,10 +2,8 @@ const Bluebird = require('bluebird');
 const express = require('express')
 const session = require('express-session')
 const cors = require('cors')
-const uuid = require('uuid/v4')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const { Sequelize } = require('sequelize');
 const sequelize = require('./db/sequelize-singleton');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
@@ -20,11 +18,7 @@ const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
 const registerRoute = require('./routes/register')
 
-
-// create the server
 const app = express();
-
-// add & configure middleware
 app.use(express.json());
 
 // app.use(cors({
@@ -36,31 +30,55 @@ app.use(express.json());
 const { User } = require('./user/model');
 const { Session } = require('./session/model');
 const { Label } = require('./label/model');
-const { Task, TaskLabel } = require('./task/model');
+const { Type } = require('./task/type/model');
+const { Status } = require('./task/status/model');
+const { Priority } = require('./task/priority/model');
+const { Role } = require('./role/model');
+const { Task, TaskLabel, TaskType, TaskStatus, TaskPriority, TaskAssignee } = require('./task/model');
 (async () => {
   await User.sync({ alter: true })
   await Session.sync({ alter: true })
   await Task.sync({ alter: true })
   await Label.sync({ alter: true })
+  await Type.sync({ alter: true })
+  await Status.sync({ alter: true })
+  await Priority.sync({ alter: true })
+  await Role.sync({ alter: true })
+  await TaskAssignee.sync({ alter: true })
   await TaskLabel.sync({ alter: true })
+  await TaskType.sync({ alter: true })
+  await TaskStatus.sync({ alter: true })
+  await TaskPriority.sync({ alter: true })
 })
 // () // Uncomment to call init db func
 
 
 
 const temp = async() => {
+    const nargiza = await userQueries.getUserByUsername('nargiza')
+    const nargiza1 = await userQueries.getUserByUsername('nargiza1')
     Promise.all([
-        Task.create({ key: 'key2', title: 'title',description: ''}),
+        Task.create({ key: 'key2', title: 'title', description: ''}),
         Label.create({ title: 'label1', color: 'red' }),
-        Label.create({ title: 'label2', color: 'green' })
+        Type.create({ type: 'type1' }),
+        Status.create({ status: 'status1' }),
+        Priority.create({ priority: 'priority1' }),
+        Role.create({ role: 'role1' })
     ])
-    .then(([task, label1, label2]) => TaskLabel.create({TaskKey: task.key, LabelId: label1.title}))
+    .then(([task, label, type, status, priority, role]) => {
+        task.setAuthor(nargiza)
+        task.addLabel(label)
+        task.addType(type)
+        task.addStatus(status)
+        task.addPriority(priority)
+        task.setAssignees([nargiza, nargiza1])
+    })
 }
 temp()
 
 const passportConfig = (passport) => {
     passport.serializeUser((user, done) => {
-      done(null, user.userId);
+      done(null, user.id);
     });
 
     passport.deserializeUser((id, done) => Bluebird.resolve()

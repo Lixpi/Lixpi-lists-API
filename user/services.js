@@ -1,7 +1,7 @@
 const { User } = require('./model');
 
-exports.getUserById = userId => User.findOne({
-  where: { userId },
+exports.getUserById = id => User.findOne({
+  where: { id },
 });
 
 exports.getUserByUsername = username => User.findOne({

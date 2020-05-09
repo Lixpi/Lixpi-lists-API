@@ -14,14 +14,6 @@ const mappings = {
     }
 }
 
-const Label = sequelize.define('Label', mappings, {
-    indexes: [
-        {
-            name: 'label_title_index',
-            method: 'BTREE',
-            fields: ['title'],
-        }
-    ]
-})
+const Label = sequelize.define('Label', mappings)
 
 exports.Label = Label
