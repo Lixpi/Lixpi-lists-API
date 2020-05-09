@@ -1,4 +1,3 @@
-const Bluebird = require('bluebird');
 const express = require('express')
 const session = require('express-session')
 const cors = require('cors')
@@ -71,7 +70,7 @@ const temp = async() => {
         task.addType(type)
         task.addStatus(status)
         task.addPriority(priority)
-        task.setAssignees([nargiza, nargiza1])
+        TaskAssignee.create({ roleRole: role.role, TaskKey: task.key, UserId: nargiza.id })
     })
 }
 temp()
@@ -81,7 +80,7 @@ const passportConfig = (passport) => {
       done(null, user.id);
     });
 
-    passport.deserializeUser((id, done) => Bluebird.resolve()
+    passport.deserializeUser((id, done) => Promise.resolve()
       .then(async () => {
         const user = await userQueries.getUserById(id);
 
@@ -95,7 +94,7 @@ const passportConfig = (passport) => {
         passwordField: 'password',
         passReqToCallback: true,
       },
-      (req, username, password, done) => Bluebird.resolve()
+      (req, username, password, done) => Promise.resolve()
         .then(async () => {
           const user = await userQueries.getUserByUsername(username);
 
