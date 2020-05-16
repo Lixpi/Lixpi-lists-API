@@ -1,4 +1,5 @@
-const _ = require('lodash')
+'use strict'
+
 const Sequelize = require('sequelize')
 
 const sequelize = require('../db/sequelize-singleton')
@@ -9,44 +10,44 @@ const { Type } = require('./type/model')
 const { Status } = require('./status/model')
 const { Priority } = require('./priority/model')
 
+const { TEXT, INTEGER } = Sequelize
+
 const mappings = {
     key: {
-        type: Sequelize.TEXT,
+        type: TEXT,
         primaryKey: true,
-        allowNull: false,
+        allowNull: false
     },
     title: {
-        type: Sequelize.TEXT,
-        allowNull: false,
+        type: TEXT,
+        allowNull: false
     },
     description: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+        type: TEXT,
+        allowNull: true
     },
     version: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-    },
+        type: TEXT,
+        allowNull: true
+    }
 }
 
 const Task = sequelize.define('Task', mappings, {
-    indexes: [
-        {
-            name: 'task_title_index',
-            method: 'BTREE',
-            fields: ['title'],
-        },
-    ],
+    indexes: [{
+        name: 'task_title_index',
+        method: 'BTREE',
+        fields: ['title'],
+    }],
 })
 
 Task.belongsTo(User, { as: 'author' })
 
 const TaskAssignee = sequelize.define('TaskAssignee', {
     id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
     }
 }, { timestamps: false })
 
@@ -60,45 +61,46 @@ TaskAssignee.belongsTo(User)
 
 const TaskLabel = sequelize.define('TaskLabel', {
     id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
     }
 }, { timestamps: false })
 
 Task.belongsToMany(Label, { through: TaskLabel })
-Label.belongsToMany(Task, { through: TaskLabel })
 Task.hasMany(TaskLabel)
-TaskLabel.belongsTo(Task)
+Label.belongsToMany(Task, { through: TaskLabel })
 Label.hasMany(TaskLabel)
+TaskLabel.belongsTo(Task)
 TaskLabel.belongsTo(Label)
 
 const TaskType = sequelize.define('TaskType', {
-id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-    allowNull: false
-}
-}, { timestamps: false })
-
-Task.belongsToMany(Type, { through: TaskType })
-Type.belongsToMany(Task, { through: TaskType })
-Task.hasMany(TaskType)
-TaskType.belongsTo(Task)
-Type.hasMany(TaskType)
-TaskType.belongsTo(Type)
-
-const TaskStatus = sequelize.define('TaskStatus', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
     }
-    }, { timestamps: false })
-    
+}, { timestamps: false })
+
+Task.belongsToMany(Type, { through: TaskType })
+Type.belongsToMany(Task, { through: TaskType })
+TaskType.belongsTo(Task)
+Type.hasMany(TaskType)
+Task.hasMany(TaskType)
+
+TaskType.belongsTo(Type)
+
+const TaskStatus = sequelize.define('TaskStatus', {
+    id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    }
+}, { timestamps: false })
+
 Task.belongsToMany(Status, { through: TaskStatus })
 Status.belongsToMany(Task, { through: TaskStatus })
 Task.hasMany(TaskStatus)
@@ -108,13 +110,13 @@ TaskStatus.belongsTo(Status)
 
 const TaskPriority = sequelize.define('TaskPriority', {
     id: {
-        type: Sequelize.INTEGER,
+        type: INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
     }
-    }, { timestamps: false })
-    
+}, { timestamps: false })
+
 Task.belongsToMany(Priority, { through: TaskPriority })
 Priority.belongsToMany(Task, { through: TaskPriority })
 Task.hasMany(TaskPriority)

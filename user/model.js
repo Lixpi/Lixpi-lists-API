@@ -34,7 +34,7 @@ User.prototype.comparePassword = function (password) { // eslint-disable-line fu
     return Promise.resolve()
         .then(() => bcrypt.compareSync(password, this.password))
         .catch((err) => {
-            return false
+            return err
         })
 }
 

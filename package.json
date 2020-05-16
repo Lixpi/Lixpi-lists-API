@@ -7,6 +7,8 @@
         "manualTest": "node_modules/mocha/bin/_mocha",
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon server.js",
+        "lint": "eslint ./",
+        "devLint": "nodemon server.js --exec 'npm run lint && node'",
         "devInspect": "nodemon --inspect=0.0.0.0:9229 server.js"
     },
     "dependencies": {
@@ -29,6 +31,8 @@
     "devDependencies": {
         "chai": "*",
         "debug": "*",
+        "eslint": "*",
+        "eslint-plugin-mocha": "*",
         "mocha": "*",
         "nodemon": "^2.0.2",
         "should": "*",

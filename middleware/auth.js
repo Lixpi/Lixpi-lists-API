@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-const passport = require('passport');
+const passport = require('passport')
 
 // TODO: just an ugly prototype, remove soon
 module.exports = async function authMiddleware(req, res) {
     if (!req.isAuthenticated()) {
         res.status(401).json({ result: 'Unauthenticated' })
     }
-};
+}
 
 /**
 * Authenticate with passport.
@@ -18,11 +18,11 @@ module.exports = async function authMiddleware(req, res) {
 const authenticate = (req, res, next) => new Promise((resolve, reject) => {
     passport.authenticate('local', (err, user) => {
         if (err) {
-            return reject(err);
+            return reject(err)
         }
 
-        return resolve(user);
-    })(req, res, next);
+        return resolve(user)
+    })(req, res, next)
 })
 
 
@@ -67,7 +67,7 @@ const saveSession = req => new Promise((resolve, reject) => {
 
         return resolve()
     })
-});
+})
 
 module.exports.authenticateWithSession = (req, res, next) => new Promise(async (resolve, reject) => {
     const user = await authenticate(req, res, next)

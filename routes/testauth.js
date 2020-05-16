@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports.get = (req, res) => {
     if (req.isAuthenticated()) {

@@ -30,3 +30,5 @@ const ROUTES = {
         path: '/project/:key'
     }
 }
+
+module.exports.ROUTES = ROUTES
