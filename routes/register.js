@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const { User } = require("../user/model")
-const { authenticateWithSession } = require("../middleware/auth")
+const { User } = require('../user/model')
+const { authenticateWithSession } = require('../middleware/auth')
 
 module.exports.post = async (req, res, next) => {
     await User.create({ username: req.body.username, password: req.body.password })
@@ -27,7 +27,7 @@ module.exports.post = async (req, res, next) => {
         .catch((err) => {
             return res.json({
                 success: false,
-                message: "Your account could not be saved. Error: ",
+                message: 'Your account could not be saved. Error: ',
                 err
             })
         })

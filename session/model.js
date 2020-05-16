@@ -1,6 +1,8 @@
-const Sequelize = require('sequelize');
+'use strict'
 
-const sequelize = require('../db/sequelize-singleton');
+const Sequelize = require('sequelize')
+
+const sequelize = require('../db/sequelize-singleton')
 
 /**
 * Sessions table is used to store user session persistently.
@@ -15,18 +17,16 @@ const mappings = {
     },
     expires: Sequelize.DATE,
     data: Sequelize.STRING(50000),
-};
+}
 
 const Session = sequelize.define('Session', mappings, {
-    indexes: [
-    {
+    indexes: [{
         name: 'session_sid_index',
         method: 'BTREE',
         fields: ['sid'],
-    },
-    ],
-});
+    }]
+})
 
-exports.mapping = mappings;
+exports.mapping = mappings
 
-exports.Session = Session;
+exports.Session = Session

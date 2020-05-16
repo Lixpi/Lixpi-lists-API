@@ -1,6 +1,6 @@
 'use strict'
 
-const { authenticateWithSession } = require("../middleware/auth")
+const { authenticateWithSession } = require('../middleware/auth')
 
 module.exports.post = async (req, res, next) => {
     await authenticateWithSession(req, res, next)
