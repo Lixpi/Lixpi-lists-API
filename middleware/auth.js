@@ -69,11 +69,11 @@ const saveSession = req => new Promise((resolve, reject) => {
     })
 })
 
-module.exports.authenticateWithSession = (req, res, next) => new Promise(async (resolve, reject) => {
+module.exports.authenticateWithSession = async (req, res, next) => {
     const user = await authenticate(req, res, next)
 
     if (!user) {
-        return reject('Invalid credentials.')
+        return 'Invalid credentials.'
     }
 
     await login(req, user)
@@ -84,5 +84,5 @@ module.exports.authenticateWithSession = (req, res, next) => new Promise(async (
 
     await saveSession(req)
 
-    return resolve('You were authenticated & logged in.')
-})
+    return 'You were authenticated & logged in.'
+}
