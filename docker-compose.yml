@@ -21,23 +21,18 @@ services:
             - 5432:5432
         volumes:
             - pgdata:/var/lib/postgresql/data
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8087:8080
     pgadmin:
         container_name: pgadmin
         image: dpage/pgadmin4
+        logging:
+            driver: none
         environment:
-            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-lixpi@lixpi.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-lixpi}
         volumes:
             - pgadmin:/root/.pgadmin
         ports:
             - "${PGADMIN_PORT:-5050}:80"
-        # networks:
-        #     - postgres
         restart: unless-stopped
 
 volumes:

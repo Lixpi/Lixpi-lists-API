@@ -33,7 +33,7 @@ const { Priority } = require('./task/priority/model')
 const { Role } = require('./role/model')
 const { Task, TaskLabel, TaskType, TaskStatus, TaskPriority, TaskAssignee } = require('./task/model')
 
-async () => {
+void (async () => {
     await User.sync({ alter: true })
     await Session.sync({ alter: true })
     await Task.sync({ alter: true })
@@ -47,7 +47,7 @@ async () => {
     await TaskType.sync({ alter: true })
     await TaskStatus.sync({ alter: true })
     await TaskPriority.sync({ alter: true })
-}
+})
 // () // Uncomment to call init db func
 
 
