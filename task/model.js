@@ -29,6 +29,18 @@ const mappings = {
     version: {
         type: TEXT,
         allowNull: true
+    },
+    timeEstimated: {
+        type: INTEGER,
+        allowNull: true
+    },
+    timeSpent: {
+        type: INTEGER,
+        allowNull: true
+    },
+    dueAt: {
+        type: INTEGER,
+        allowNull: true
     }
 }
 
@@ -130,11 +142,3 @@ exports.TaskType = TaskType
 exports.TaskStatus = TaskStatus
 exports.TaskPriority = TaskPriority
 exports.Task = Task
-
-// let TaskSchema = new mongoose.Schema({
-//     timeTracking: {
-//         estimated: Number,
-//         spent: Number
-//     },
-//     dueAt: Number,
-// });
