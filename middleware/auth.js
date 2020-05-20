@@ -77,10 +77,10 @@ module.exports.authenticateWithSession = async (req, res, next) => {
     }
 
     await login(req, user)
-    const temp = req.session.passport
+    const oldPassport = req.session.passport
 
     await regenerateSession(req)
-    req.session.passport = temp
+    req.session.passport = oldPassport
 
     await saveSession(req)
 

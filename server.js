@@ -50,30 +50,6 @@ void (async () => {
 })
 // () // Uncomment to call init db func
 
-
-
-async () => {
-    const nargiza = await userQueries.getUserByUsername('nargiza')
-    // const nargiza1 = await userQueries.getUserByUsername('nargiza1')
-    Promise.all([
-        Task.create({ key: 'key2', title: 'title', description: ''}),
-        Label.create({ title: 'label1', color: 'red' }),
-        Type.create({ type: 'type1' }),
-        Status.create({ status: 'status1' }),
-        Priority.create({ priority: 'priority1' }),
-        Role.create({ role: 'role1' })
-    ])
-        .then(([task, label, type, status, priority, role]) => {
-            task.setAuthor(nargiza)
-            task.addLabel(label)
-            task.addType(type)
-            task.addStatus(status)
-            task.addPriority(priority)
-            TaskAssignee.create({ roleRole: role.role, TaskKey: task.key, UserId: nargiza.id })
-        })
-}
-// ()
-
 const passportConfig = (passport) => {
     passport.serializeUser((user, done) => {
         done(null, user.id)
