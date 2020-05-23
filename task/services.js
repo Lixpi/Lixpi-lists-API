@@ -19,12 +19,30 @@ const getTasks = async function getTasks () {
 }
 
 const createTask = async function createTask (data, currentTimestamp = new Date().getTime()) {
-    const newKey = 'KEY-25'
-    const nargiza = await getUserByUsername('nargiza')
-    const nargiza1 = await getUserByUsername('nargiza1')
+    const {
+        title, 
+        description, 
+        version, 
+        timeEstimated, 
+        timeSpent, 
+        dueAt, 
+        authorId, 
+        labels, 
+        type, 
+        status, 
+        priority, 
+        assignees
+    } = data
+    const newKey = 'KEY-37'
 
-    const {title, description, version, timeEstimated, timeSpent, dueAt, authorId, labels, type, status, priority, assignees} = data
-    Promise.all([
+    const assigneeRecords = []
+    for (const assignee of assignees) {
+        const assigneeUser = await getUserByUsername(assignee[0])
+        const assigneeRecord = await assigneeUser.addRole(assignee[1])
+        assigneeRecords.push(assigneeRecord)
+    }
+
+    Promise.all(
         Task.create({ 
             key: newKey,
             title, 
@@ -35,14 +53,16 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
             dueAt,
             authorId
         })
-    ])
-        .then(([task]) => {
+    )
+        .then((task) => {
             // task.addLabels(labels)
             // task.addType(type)
             // task.addStatus(status)
             // task.addPriority(priority)
-            // const assignee = nargiza.addRole(assignees[0][1])
-            // task.addUserRoles(assignee.id)
+            
+            for (const assignee of assigneeRecords) {
+                task.addUserRoles(assignee)
+            }
         })
 }
 
