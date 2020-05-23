@@ -10,7 +10,7 @@ const { Type } = require('./type/model')
 const { Status } = require('./status/model')
 const { Priority } = require('./priority/model')
 
-const { TEXT, INTEGER } = Sequelize
+const { TEXT, INTEGER, DATE } = Sequelize
 
 const mappings = {
     key: {
@@ -39,7 +39,7 @@ const mappings = {
         allowNull: true
     },
     dueAt: {
-        type: INTEGER,
+        type: DATE,
         allowNull: true
     }
 }
@@ -54,6 +54,22 @@ const Task = sequelize.define('Task', mappings, {
 
 Task.belongsTo(User, { as: 'author' })
 
+const UserRole = sequelize.define('UserRole', {
+    id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    }
+}, { timestamps: false })
+
+User.belongsToMany(Role, { through: UserRole })
+User.hasMany(UserRole)
+Role.belongsToMany(User, { through: UserRole })
+Role.hasMany(UserRole)
+UserRole.belongsTo(User)
+UserRole.belongsTo(Role)
+
 const TaskAssignee = sequelize.define('TaskAssignee', {
     id: {
         type: INTEGER,
@@ -63,13 +79,12 @@ const TaskAssignee = sequelize.define('TaskAssignee', {
     }
 }, { timestamps: false })
 
-TaskAssignee.belongsTo(Role, { as: 'role' })
-Task.belongsToMany(User, { through: TaskAssignee })
-User.belongsToMany(Task, { through: TaskAssignee })
+Task.belongsToMany(UserRole, { through: TaskAssignee })
 Task.hasMany(TaskAssignee)
+UserRole.belongsToMany(Task, { through: TaskAssignee })
+UserRole.hasMany(TaskAssignee)
 TaskAssignee.belongsTo(Task)
-User.hasMany(TaskAssignee)
-TaskAssignee.belongsTo(User)
+TaskAssignee.belongsTo(UserRole)
 
 const TaskLabel = sequelize.define('TaskLabel', {
     id: {
@@ -136,6 +151,7 @@ TaskPriority.belongsTo(Task)
 Priority.hasMany(TaskPriority)
 TaskPriority.belongsTo(Priority)
 
+exports.UserRole = UserRole
 exports.TaskAssignee = TaskAssignee
 exports.TaskLabel = TaskLabel
 exports.TaskType = TaskType
