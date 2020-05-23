@@ -16,6 +16,10 @@ To truncate and sync models:
 ```
 npm run dbInit
 ```
+To run seeds:
+```
+npx sequelize-cli db:seed:all
+```
 
 API documentation
 
