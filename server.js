@@ -3,9 +3,9 @@ const session = require('express-session')
 const cors = require('cors')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const sequelize = require('./db/sequelize-singleton')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 
+const sequelize = require('./db/sequelize-singleton')
 const userQueries = require('./user/services')
 
 const indexRoute = require('./routes/index')
@@ -54,8 +54,6 @@ const passportConfig = (passport) => {
     ))
 }
 
-
-
 passportConfig(passport)
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -71,7 +69,6 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-
 
 // Routes ******************************************
 app.get('/', indexRoute.get)
