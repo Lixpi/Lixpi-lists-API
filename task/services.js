@@ -33,7 +33,7 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
         priority, 
         assignees
     } = data
-    const newKey = 'KEY-37'
+    const newKey = 'KEY-1'
 
     const assigneeRecords = []
     for (const assignee of assignees) {

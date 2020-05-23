@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const sequelize = require('../../db/sequelize-singleton')
 
 const mappings = {
-    priority: {
+    title: {
         type: Sequelize.TEXT,
         primaryKey: true
     }
