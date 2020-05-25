@@ -16,6 +16,8 @@ const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
 const registerRoute = require('./routes/register')
 
+const { Session } = require('./session/model')
+
 const app = express()
 app.use(express.json())
 

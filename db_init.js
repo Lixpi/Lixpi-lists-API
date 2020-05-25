@@ -7,7 +7,7 @@ const { Priority } = require('./task/priority/model')
 const { Role } = require('./role/model')
 const { Task, TaskLabel, TaskType, TaskStatus, TaskPriority, UserRole, TaskAssignee } = require('./task/model')
 
-const syncModels = (async () => {
+const syncModels = async () => {
     await User.sync({ alter: true, force:true })
     await Session.sync({ alter: true, force:true })
     await Task.sync({ alter: true, force:true })
@@ -22,7 +22,7 @@ const syncModels = (async () => {
     await TaskType.sync({ alter: true, force:true })
     await TaskStatus.sync({ alter: true, force:true })
     await TaskPriority.sync({ alter: true, force:true })
-})
+}
 
 module.exports = {
     syncModels
