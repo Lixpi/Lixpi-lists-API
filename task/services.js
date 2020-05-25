@@ -20,17 +20,17 @@ const getTasks = async function getTasks () {
 
 const createTask = async function createTask (data, currentTimestamp = new Date().getTime()) {
     const {
-        title, 
-        description, 
-        version, 
-        timeEstimated, 
-        timeSpent, 
-        dueAt, 
-        authorId, 
-        labels, 
-        type, 
-        status, 
-        priority, 
+        title,
+        description,
+        version,
+        timeEstimated,
+        timeSpent,
+        dueAt,
+        authorId,
+        labels,
+        type,
+        status,
+        priority,
         assignees
     } = data
     const newKey = 'KEY-1'
@@ -43,9 +43,9 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
     }
 
     Promise.all(
-        Task.create({ 
+        Task.create({
             key: newKey,
-            title, 
+            title,
             description,
             version,
             timeEstimated,
@@ -59,7 +59,7 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
             // task.addType(type)
             // task.addStatus(status)
             // task.addPriority(priority)
-            
+
             for (const assignee of assigneeRecords) {
                 task.addUserRoles(assignee)
             }
