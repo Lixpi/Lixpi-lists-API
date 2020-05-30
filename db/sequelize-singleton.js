@@ -1,6 +1,5 @@
-require('dotenv').config()
+const { env } = require('../config/node-config-loader')
 
-const process = require('process')
 const Sequelize = require('sequelize')
 
 const self = module.exports
@@ -11,13 +10,14 @@ let sequelize
 *
 * @returns {object} - Sequelize object
 */
-exports.initialize = () => {
+exports.initialize = (connectToDb = true) => {
     if (!sequelize) {
-        const dbName = process.env.DATABASE_NAME
-        const dbUsername = process.env.DATABASE_USERNAME
-        const dbPassword = process.env.DATABASE_PASSWORD
-        const dbHost = process.env.DATABASE_HOST
-        const dbPort = process.env.DATABASE_PORT
+        const dbName = connectToDb ? env.DATABASE_NAME : ''
+        const dbUsername = env.DATABASE_USERNAME
+        const dbPassword = env.DATABASE_PASSWORD
+        const dbHost = env.DATABASE_HOST
+        const dbPort = env.DATABASE_PORT
+
         return new Sequelize(dbName, dbUsername, dbPassword, {
             host: dbHost,
             port: dbPort,
@@ -28,4 +28,4 @@ exports.initialize = () => {
     return sequelize
 }
 
-module.exports = self.initialize()
+module.exports = self.initialize

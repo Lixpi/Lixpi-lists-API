@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize')
 
-const sequelize = require('../db/sequelize-singleton')
+const sequelize = require('../db/sequelize-singleton')()
 const { User } = require('../user/model')
 const { Role } = require('../role/model')
 const { Label } = require('../label/model')
