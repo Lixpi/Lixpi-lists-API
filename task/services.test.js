@@ -5,7 +5,13 @@ const sequelize = require('../db/sequelize-singleton')
 
 const { expect } = require('chai')
 
-// const { User } = require('../user/model')
+const { User } = require('../user/model')
+const { Label } = require('../label/model')
+const { Role } = require('../role/model')
+const { Priority } = require('../task/priority/model')
+const { Status } = require('../task/status/model')
+const { Type } = require('../task/type/model')
+const { createTask } = require('../task/services')
 
 // const Task = require('./model')
 // const User = require('../users/model')
@@ -14,16 +20,49 @@ const { expect } = require('chai')
 // let mongoServer
 
 before(async () => {
-    // const createUser = async () => await User.create({ username: "user1", password: "123123" })
+    console.log('before *********************************************************************************************************\n')
+    const createUsers = async () => {
+        await User.create({ username: 'user1', password: '123123' })
+        await User.create({ username: 'user2', password: '123123' })
+    }
 
-    dropDb()
+    const createLabels = async () => {
+        await Label.create({ color: 'green', title: 'label1' })
+        await Label.create({ color: 'purple', title: 'label2' })
+    }
+
+    const createRoles = async () => {
+        await Role.create({ title: 'developer' })
+        await Role.create({ title: 'designer' })
+        await Role.create({ title: 'tester' })
+    }
+
+    const createPriorities = async () => {
+        await Priority.create({ title: 'critical' })
+        await Priority.create({ title: 'urgent' })
+        await Priority.create({ title: 'blocking' })
+    }
+
+    const createStatuses = async () => {
+        await Status.create({ title: 'new' })
+        await Status.create({ title: 'closed' })
+        await Status.create({ title: 'in progress' })
+    }
+
+    const createTypes = async () => {
+        await Type.create({ title: 'bug' })
+        await Type.create({ title: 'feature' })
+    }
+
+    return dropDb()
         .then(initDb)
         .then(syncModels)
-        // .then(createUser)
-
-
-
-
+        .then(createUsers)
+        .then(createLabels)
+        .then(createRoles)
+        .then(createPriorities)
+        .then(createStatuses)
+        .then(createTypes)
 
 
     // initDb()
@@ -35,6 +74,7 @@ before(async () => {
 })
 
 after(async () => {
+    console.log('after *********************************************************************************************************\n')
     // dropDb()
     // await mongoose.disconnect()
     // await mongoServer.stop()
@@ -42,6 +82,7 @@ after(async () => {
 
 describe('Task CRUD operations', () => {
     beforeEach( async () => {
+        console.log('beforeEach *********************************************************************************************************\n')
         // // clean all collections before start in case tests didn't finish properly
         // const collections = mongoose.connection.collections
         // for (const key in collections) {
@@ -56,6 +97,7 @@ describe('Task CRUD operations', () => {
     })
 
     afterEach( async () => {
+        console.log('afterEach *********************************************************************************************************\n')
     })
 
     // it('Should retrieve task by key including author', async () => {
@@ -75,19 +117,25 @@ describe('Task CRUD operations', () => {
     // })
 
     it('Should save task and return the new task including author', async () => {
-        // const newTaskData = {
-        //     title: "Seventhtask title",
-        //     description: "Task description",
-        //          type: "bug",
-        //         status: "open",
-        //     priority: "critical",
-        //     version: "1.0",
-        //     labels: ["label1", "label2"],
-        //     timeEstimated: 124234,
-        //     timeSpent: 124234,
-        //     dueAt: "2020-11-11 00:00:00",
-        //     assignees: [["nargiza", "developer"], ["nargiza1", "designer"]]
-        // }
+        console.log('test *********************************************************************************************************\n')
+        const newTaskData = {
+            title: 'Seventhtask title',
+            description: 'Task description',
+                 type: 'bug',
+                status: 'open',
+            priority: 'critical',
+            version: '1.0',
+            labels: ['label1', 'label2'],
+            timeEstimated: 124234,
+            timeSpent: 124234,
+            dueAt: '2020-11-11 00:00:00',
+            assignees: [
+                ['user1', 'developer'],
+                ['user2', 'designer']
+            ]
+        }
+
+        return await createTask(newTaskData)
 
         // const currentTimestamp = 1584660793927
         // const actualTask = await createTask(newTaskData, currentTimestamp)
