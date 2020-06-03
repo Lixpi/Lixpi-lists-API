@@ -35,35 +35,35 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
     } = data
     const newKey = 'KEY-1'
 
-    const assigneeRecords = []
-    for (const assignee of assignees) {
-        const assigneeUser = await getUserByUsername(assignee[0])
-        const assigneeRecord = await assigneeUser.addRole(assignee[1])
-        assigneeRecords.push(assigneeRecord)
-    }
 
-    Promise.all(
-        Task.create({
-            key: newKey,
-            title,
-            description,
-            version,
-            timeEstimated,
-            timeSpent,
-            dueAt,
-            authorId
-        })
+    const userRoles = await Promise.all(
+        assignees.map(assignee =>
+            getUserByUsername(assignee.username)
+                .then(user => user.addRole(assignee.role))
+        )
     )
-        .then((task) => {
-            // task.addLabels(labels)
-            // task.addType(type)
-            // task.addStatus(status)
-            // task.addPriority(priority)
 
-            for (const assignee of assigneeRecords) {
-                task.addUserRoles(assignee)
-            }
-        })
+
+    return Task.create({
+        key: newKey,
+        title,
+        description,
+        version,
+        timeEstimated,
+        timeSpent,
+        dueAt,
+        authorId
+    })
+    .then((task) => {
+        // task.addLabels(labels)
+        // task.addType(type)
+        // task.addStatus(status)
+        // task.addPriority(priority)
+
+        userRoles.forEach(userRole => task.addUserRoles(userRole))
+
+        return task
+    })
 }
 
 module.exports = {

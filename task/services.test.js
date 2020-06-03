@@ -2,6 +2,7 @@
 // const { MongoMemoryServer } = require('mongodb-memory-server')
 const { initDb, dropDb, syncModels } = require('../db/db-init')
 const sequelize = require('../db/sequelize-singleton')
+const sinon = require('sinon')
 
 const { expect } = require('chai')
 
@@ -12,19 +13,28 @@ const { Priority } = require('../task/priority/model')
 const { Status } = require('../task/status/model')
 const { Type } = require('../task/type/model')
 const { createTask } = require('../task/services')
+const { TaskAssignee, UserRole } = require('../task/model')
 
 // const Task = require('./model')
 // const User = require('../users/model')
 // const { createTask, getTask, getTasks } = require('./services')
 
 // let mongoServer
+let loggedInUser
+let fakeTime
+let currentTime
 
 before(async () => {
-    console.log('before *********************************************************************************************************\n')
     const createUsers = async () => {
-        await User.create({ username: 'user1', password: '123123' })
+        await User.create({ username: 'user1', password: '123123' }).then((user) => {
+            // console.log('user>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            // console.log(user)
+            loggedInUser = user
+        })
         await User.create({ username: 'user2', password: '123123' })
     }
+
+
 
     const createLabels = async () => {
         await Label.create({ color: 'green', title: 'label1' })
@@ -74,6 +84,7 @@ before(async () => {
 })
 
 after(async () => {
+
     console.log('after *********************************************************************************************************\n')
     // dropDb()
     // await mongoose.disconnect()
@@ -94,9 +105,12 @@ describe('Task CRUD operations', () => {
         // this.mockUser = await new User({ _id: mockUserId, username: 'testuser' }).save()
         // this.mockTask1 = await new Task({ _id: '5e684ececb19f70020661f45', key: 'TAS-1', author: mockUserId }).save()
         // this.mockTask2 = await new Task({ _id: '5e684ececb19f70020661f41', key: 'TAS-2', author: mockUserId }).save()
+        fakeTime = sinon.useFakeTimers(new Date(2011,9,1).getTime());
+        currentTime = new Date()
     })
 
     afterEach( async () => {
+        fakeTime.restore();
         console.log('afterEach *********************************************************************************************************\n')
     })
 
@@ -117,42 +131,45 @@ describe('Task CRUD operations', () => {
     // })
 
     it('Should save task and return the new task including author', async () => {
-        console.log('test *********************************************************************************************************\n')
         const newTaskData = {
             title: 'Seventhtask title',
             description: 'Task description',
-                 type: 'bug',
-                status: 'open',
+            type: 'bug',
+            status: 'open',
             priority: 'critical',
             version: '1.0',
+            authorId: loggedInUser.dataValues.id,
             labels: ['label1', 'label2'],
             timeEstimated: 124234,
             timeSpent: 124234,
-            dueAt: '2020-11-11 00:00:00',
+            dueAt: currentTime,
             assignees: [
-                ['user1', 'developer'],
-                ['user2', 'designer']
+                { username: 'user1', role: 'developer' },
+                { username: 'user2', role: 'designer' }
             ]
         }
 
-        return await createTask(newTaskData)
+        const expectedTask = {
+            key: 'KEY-1',
+            title: 'Seventhtask title',
+            description: 'Task description',
+            version: '1.0',
+            timeEstimated: 124234,
+            timeSpent: 124234,
+            authorId: loggedInUser.dataValues.id,
+            dueAt: currentTime,
+            updatedAt: currentTime,
+            createdAt: currentTime
+        }
 
-        // const currentTimestamp = 1584660793927
-        // const actualTask = await createTask(newTaskData, currentTimestamp)
-        // const expectedTask = new Task(
-        //     Object.assign({},
-        //         { _id: actualTask._id },
-        //         { key: 'KEY-1' },
-        //         newTaskData,
-        //         {
-        //             timestamps: {
-        //                 createdAt: currentTimestamp,
-        //                 updatedAt: currentTimestamp
-        //             }
-        //         },
-        //         { author: this.mockUser }
-        //     )
-        // )
-        // expect(actualTask.equals(expectedTask)).to.be.true
+        const actualTask = await createTask(newTaskData)
+
+        // const asdf = await TaskAssignee.findAll()
+
+
+        // console.log('asffdfaldhflasdhflj')
+        // console.log(asdf)
+
+        expect(actualTask.dataValues).to.deep.equal(expectedTask);
     })
 })

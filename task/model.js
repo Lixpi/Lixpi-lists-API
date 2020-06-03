@@ -12,6 +12,8 @@ const { Priority } = require('./priority/model')
 
 const { TEXT, INTEGER, DATE } = Sequelize
 
+
+// Declaring Task model
 const mappings = {
     key: {
         type: TEXT,
@@ -52,8 +54,10 @@ const Task = sequelize.define('Task', mappings, {
     }],
 })
 
+// Adding authorId to Task model
 Task.belongsTo(User, { as: 'author' })
 
+// Adding task assignees using two tables <UserRole> and <TaskAssignee>
 const UserRole = sequelize.define('UserRole', {
     id: {
         type: INTEGER,
@@ -86,6 +90,7 @@ UserRole.hasMany(TaskAssignee)
 TaskAssignee.belongsTo(Task)
 TaskAssignee.belongsTo(UserRole)
 
+// Adding labels to task
 const TaskLabel = sequelize.define('TaskLabel', {
     id: {
         type: INTEGER,
@@ -102,6 +107,7 @@ Label.hasMany(TaskLabel)
 TaskLabel.belongsTo(Task)
 TaskLabel.belongsTo(Label)
 
+// Adding types to task
 const TaskType = sequelize.define('TaskType', {
     id: {
         type: Sequelize.INTEGER,
@@ -116,9 +122,9 @@ Type.belongsToMany(Task, { through: TaskType })
 TaskType.belongsTo(Task)
 Type.hasMany(TaskType)
 Task.hasMany(TaskType)
-
 TaskType.belongsTo(Type)
 
+// Adding status to task
 const TaskStatus = sequelize.define('TaskStatus', {
     id: {
         type: INTEGER,
@@ -135,6 +141,7 @@ TaskStatus.belongsTo(Task)
 Status.hasMany(TaskStatus)
 TaskStatus.belongsTo(Status)
 
+// Adding priority to task
 const TaskPriority = sequelize.define('TaskPriority', {
     id: {
         type: INTEGER,
