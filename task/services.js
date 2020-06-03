@@ -1,5 +1,6 @@
 'use strict'
 
+const sequelize = require('../db/sequelize-singleton')()
 const { getUserByUsername } = require('../user/services')
 const { Task, TaskLabel } = require('./model')
 const { Label } = require('../label/model')
@@ -43,27 +44,28 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
         )
     )
 
+    try {
+        return await sequelize.transaction(async (t) => {
+            const task = await Task.create({
+                key: newKey,
+                title,
+                description,
+                version,
+                timeEstimated,
+                timeSpent,
+                dueAt,
+                authorId
+            }, { transaction: t })
 
-    return Task.create({
-        key: newKey,
-        title,
-        description,
-        version,
-        timeEstimated,
-        timeSpent,
-        dueAt,
-        authorId
-    })
-    .then((task) => {
-        // task.addLabels(labels)
-        // task.addType(type)
-        // task.addStatus(status)
-        // task.addPriority(priority)
+            await Promise.all(
+                userRoles.map(userRole => task.addUserRoles(userRole, { transaction: t }))
+            )
 
-        userRoles.forEach(userRole => task.addUserRoles(userRole))
-
-        return task
-    })
+            return task
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 module.exports = {
