@@ -68,7 +68,7 @@ before(async () => {
 
 after(async () => {
     console.log('after *********************************************************************************************************\n')
-    // return dropDb()
+    return dropDb()
 })
 
 describe('Task CRUD operations', () => {
