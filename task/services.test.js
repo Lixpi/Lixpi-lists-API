@@ -6,14 +6,21 @@ const sinon = require('sinon')
 
 const { expect } = require('chai')
 
-const { User } = require('../user/model')
 const { Label } = require('../label/model')
 const { Role } = require('../role/model')
 const { Priority } = require('../task/priority/model')
 const { Status } = require('../task/status/model')
 const { Type } = require('../task/type/model')
 const { createTask } = require('../task/services')
-const { TaskAssignee, UserRole } = require('../task/model')
+const {
+    TaskAssignee,
+    UserRole,
+    TaskLabel,
+    TaskType,
+    TaskStatus,
+    TaskPriority
+} = require('../task/model')
+const { User } = require('../user/model')
 
 let loggedInUser
 let fakeTime
@@ -83,12 +90,12 @@ describe('Task CRUD operations', () => {
         console.log('afterEach *********************************************************************************************************\n')
     })
 
-    it('Should save task and return the new task including author', async () => {
+    it('Should save task including relationships', async () => {
         const newTaskData = {
             title: 'Seventhtask title',
             description: 'Task description',
             type: 'bug',
-            status: 'open',
+            status: 'new',
             priority: 'critical',
             version: '1.0',
             authorId: loggedInUser.dataValues.id,
@@ -117,6 +124,67 @@ describe('Task CRUD operations', () => {
 
         const actualTask = await createTask(newTaskData)
 
-        expect(actualTask.dataValues).to.deep.equal(expectedTask);
+        const taskAssignees = await TaskAssignee.findAll({
+            where: {
+                TaskKey: 'KEY-1'
+            }
+        })
+
+        expect(actualTask.dataValues).to.deep.equal(expectedTask)
+
+        const taskAssigneesPromissesArray = taskAssignees.map(async taskAssignee => {
+            const userRole = await UserRole.findOne({
+                where: {
+                    id: taskAssignee.dataValues.UserRoleId
+                }
+            })
+            const user = await User.findOne({
+                where: {
+                    id: userRole.UserId
+                }
+            })
+            return {
+                username: user.dataValues.username,
+                role: userRole.dataValues.RoleTitle
+            }
+        })
+
+        Promise.all(taskAssigneesPromissesArray).then((values) => {
+            values.sort((a, b) => a.username.localeCompare(b.username))
+            expect(values).to.deep.equal(newTaskData.assignees)
+        })
+
+
+        const taskLabels = await TaskLabel.findAll({
+            where: {
+                TaskKey: 'KEY-1'
+            }
+        })
+        const actualTaskLabels = taskLabels.map(taskLabel => taskLabel.dataValues.LabelTitle).sort()
+        expect(actualTaskLabels).to.deep.equal(newTaskData.labels)
+
+
+        const actualTaskType = await TaskType.findOne({
+            where: {
+                TaskKey: 'KEY-1'
+            }
+        })
+       expect(actualTaskType.dataValues.TypeTitle).to.equal(newTaskData.type)
+
+
+       const actualTaskStatus = await TaskStatus.findOne({
+            where: {
+                TaskKey: 'KEY-1'
+            }
+        })
+       expect(actualTaskStatus.dataValues.StatusTitle).to.equal(newTaskData.status)
+
+
+       const actualTaskPriority = await TaskPriority.findOne({
+            where: {
+                TaskKey: 'KEY-1'
+            }
+        })
+       expect(actualTaskPriority.dataValues.PriorityTitle).to.equal(newTaskData.priority)
     })
 })
