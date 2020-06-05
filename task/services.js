@@ -57,9 +57,13 @@ const createTask = async function createTask (data, currentTimestamp = new Date(
                 authorId
             }, { transaction: t })
 
-            await Promise.all(
-                userRoles.map(userRole => task.addUserRoles(userRole, { transaction: t }))
-            )
+            await Promise.all([
+                ...userRoles.map(userRole => task.addUserRoles(userRole, { transaction: t })),
+                task.addLabels(labels, { transaction: t }),
+                task.addType(type, { transaction: t }),
+                task.addStatus(status, { transaction: t }),
+                task.addPriority(priority, { transaction: t })
+            ])
 
             return task
         })
