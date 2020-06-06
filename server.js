@@ -5,7 +5,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 
-const sequelize = require('./db/sequelize-singleton')()
+const sequelize = require('./db/sequelize-singleton')
 const userQueries = require('./user/services')
 
 const indexRoute = require('./routes/index')
@@ -30,7 +30,6 @@ const passportConfig = (passport) => {
     passport.serializeUser((user, done) => {
         done(null, user.id)
     })
-
     passport.deserializeUser((id, done) => Promise.resolve()
         .then(async () => {
             const user = await userQueries.getUserById(id)
@@ -38,7 +37,6 @@ const passportConfig = (passport) => {
             done(null, user)
         })
         .catch(done))
-
     passport.use('local', new LocalStrategy({
         usernameField: 'username',
         passwordField: 'password',

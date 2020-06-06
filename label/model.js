@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-const sequelize = require('../db/sequelize-singleton')()
+const sequelize = require('../db/sequelize-singleton')
 
 const mappings = {
     color: {
