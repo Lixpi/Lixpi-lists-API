@@ -5,14 +5,14 @@ const { getUserByUsername } = require('../user/repository')
 const { Task, TaskAssignee, UserRole } = require('./model')
 const { User } = require('../user/model')
 
-const getTask = async function getTask (key) {
+const getTask = async key => {
     const task = await Task.findOne({key})
         .populate('author')
         .exec()
     return task
 }
 
-const getTasks = async function getTasks () {
+const getTasks = async () => {
     return Task.findAll({
         include: [
         {
@@ -51,7 +51,7 @@ const getTasks = async function getTasks () {
     })))
 }
 
-const createTask = async function createTask (data) {
+const createTask = async data => {
     const {
         title,
         description,
