@@ -2,8 +2,8 @@
 
 const sequelize = require('../db/sequelize')
 const { getUserByUsername } = require('../user/repository')
-const { Task, TaskLabel } = require('./model')
-const { Label } = require('../label/model')
+const { Task, TaskAssignee, UserRole } = require('./model')
+const { User } = require('../user/model')
 
 const getTask = async function getTask (key) {
     const task = await Task.findOne({key})
@@ -13,13 +13,32 @@ const getTask = async function getTask (key) {
 }
 
 const getTasks = async function getTasks () {
-    const tasks = await Task.find()
-        .populate('author')
-        .exec()
-    return tasks
+    return Task.findAll({
+        include: [{
+            model: TaskAssignee,
+            attributes: ['id'],
+            include: [{
+                model: UserRole,
+                attributes: ['RoleTitle'],
+                include: [{
+                    model: User,
+                    attributes: ['username']
+                }]
+            }],
+        }]
+    }).then(tasks => {
+        console.log('tasks')
+        console.log(tasks)
+        return tasks.map(task => {
+            return {
+                key: task.key,
+                title: task.title
+            }
+        })
+    })
 }
 
-const createTask = async function createTask (data, currentTimestamp = new Date().getTime()) {
+const createTask = async function createTask (data) {
     const {
         title,
         description,
