@@ -5,8 +5,8 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 
-const sequelize = require('./db/sequelize-singleton')
-const userQueries = require('./user/services')
+const sequelize = require('./db/sequelize')
+const userQueries = require('./user/repository')
 
 const indexRoute = require('./routes/index')
 const tasksRoute = require('./routes/tasks/tasks')
