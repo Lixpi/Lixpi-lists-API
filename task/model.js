@@ -12,8 +12,6 @@ const { Priority } = require('./priority/model')
 
 const { TEXT, INTEGER, DATE } = Sequelize
 
-
-// Declaring Task model
 const mappings = {
     key: {
         type: TEXT,

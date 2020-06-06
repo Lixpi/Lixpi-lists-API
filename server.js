@@ -9,6 +9,7 @@ const sequelize = require('./db/sequelize')
 const userQueries = require('./user/repository')
 
 const indexRoute = require('./routes/index')
+const projectsRoute = require('./routes/projects/projects')
 const tasksRoute = require('./routes/tasks/tasks')
 const taskRoute = require('./routes/tasks/task')
 const loginRoute = require('./routes/login')
@@ -72,6 +73,7 @@ app.use(passport.session())
 
 // Routes ******************************************
 app.get('/', indexRoute.get)
+app.post('/projects', projectsRoute.post)
 app.get('/tasks', tasksRoute.get)
 app.post('/tasks', tasksRoute.post)
 app.get('/task/:key', taskRoute.get)
