@@ -2,7 +2,7 @@ const _ = require('lodash')
 const bcrypt = require('bcrypt')
 const Sequelize = require('sequelize')
 
-const sequelize = require('../db/sequelize-singleton')()
+const sequelize = require('../db/sequelize-singleton')
 
 const mappings = {
     id: {

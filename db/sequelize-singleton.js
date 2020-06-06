@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const { env } = require('../config/node-config-loader')
 
+const self = module.exports
 let sequelize
 
 /**
@@ -8,9 +9,9 @@ let sequelize
 *
 * @returns {object} - Sequelize object
 */
-module.exports = (connectToDb = true) => {
+exports.initialize = () => {
     if (!sequelize) {
-        const dbName = connectToDb ? env.DATABASE_NAME : ''
+        const dbName = env.DATABASE_NAME
         const dbUsername = env.DATABASE_USERNAME
         const dbPassword = env.DATABASE_PASSWORD
         const dbHost = env.DATABASE_HOST
@@ -25,3 +26,5 @@ module.exports = (connectToDb = true) => {
 
     return sequelize
 }
+
+module.exports = self.initialize()
