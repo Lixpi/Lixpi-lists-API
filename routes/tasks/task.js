@@ -1,7 +1,7 @@
 'use strict'
 
 const authMiddleware = require('../../middleware/auth')
-const { getTask } = require('../../task/services')
+const { getTask } = require('../../task/repository')
 
 module.exports.get = async (req, res) => {
     authMiddleware(req, res)

@@ -1,4 +1,4 @@
-const sequelize = require('./sequelize-singleton')
+const sequelize = require('./sequelize')
 
 const { User } = require('../user/model')
 const { Session } = require('../session/model')

@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize')
 
-const sequelize = require('../db/sequelize-singleton')
+const sequelize = require('../db/sequelize')
 
 /**
 * Sessions table is used to store user session persistently.

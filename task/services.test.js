@@ -1,7 +1,4 @@
-// const mongoose = require('mongoose')
-// const { MongoMemoryServer } = require('mongodb-memory-server')
-const { initDb, dropDb, syncModels } = require('../db/db-init')
-const sequelize = require('../db/sequelize-singleton')
+const { syncModels } = require('../db/db-init')
 const sinon = require('sinon')
 
 const { expect } = require('chai')
@@ -11,7 +8,7 @@ const { Role } = require('../role/model')
 const { Priority } = require('../task/priority/model')
 const { Status } = require('../task/status/model')
 const { Type } = require('../task/type/model')
-const { createTask } = require('../task/services')
+const { createTask } = require('./repository')
 const {
     TaskAssignee,
     UserRole,
@@ -62,9 +59,7 @@ before(async () => {
         await Type.create({ title: 'feature' })
     }
 
-    return dropDb()
-        .then(initDb)
-        .then(syncModels)
+    return syncModels()
         .then(createUsers)
         .then(createLabels)
         .then(createRoles)
@@ -75,7 +70,6 @@ before(async () => {
 
 after(async () => {
     console.log('after *********************************************************************************************************\n')
-    return dropDb()
 })
 
 describe('Task CRUD operations', () => {
@@ -169,22 +163,22 @@ describe('Task CRUD operations', () => {
                 TaskKey: 'KEY-1'
             }
         })
-       expect(actualTaskType.dataValues.TypeTitle).to.equal(newTaskData.type)
+        expect(actualTaskType.dataValues.TypeTitle).to.equal(newTaskData.type)
 
 
-       const actualTaskStatus = await TaskStatus.findOne({
+        const actualTaskStatus = await TaskStatus.findOne({
             where: {
                 TaskKey: 'KEY-1'
             }
         })
-       expect(actualTaskStatus.dataValues.StatusTitle).to.equal(newTaskData.status)
+        expect(actualTaskStatus.dataValues.StatusTitle).to.equal(newTaskData.status)
 
 
-       const actualTaskPriority = await TaskPriority.findOne({
+        const actualTaskPriority = await TaskPriority.findOne({
             where: {
                 TaskKey: 'KEY-1'
             }
         })
-       expect(actualTaskPriority.dataValues.PriorityTitle).to.equal(newTaskData.priority)
+        expect(actualTaskPriority.dataValues.PriorityTitle).to.equal(newTaskData.priority)
     })
 })

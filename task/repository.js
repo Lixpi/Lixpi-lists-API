@@ -1,7 +1,7 @@
 'use strict'
 
-const sequelize = require('../db/sequelize-singleton')
-const { getUserByUsername } = require('../user/services')
+const sequelize = require('../db/sequelize')
+const { getUserByUsername } = require('../user/repository')
 const { Task, TaskLabel } = require('./model')
 const { Label } = require('../label/model')
 
