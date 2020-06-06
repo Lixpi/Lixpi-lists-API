@@ -11,7 +11,7 @@ const { Task, TaskLabel, TaskType, TaskStatus, TaskPriority, UserRole, TaskAssig
 
 const syncModels = async () => {
     console.log('Initializing models!')
-    sequelize.sync({ force:true })
+    return await sequelize.sync({ force:true })
 }
 
 module.exports = {
