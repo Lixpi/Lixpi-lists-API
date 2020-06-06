@@ -14,7 +14,13 @@ const getTask = async function getTask (key) {
 
 const getTasks = async function getTasks () {
     return Task.findAll({
-        include: [{
+        include: [
+        {
+            model: User,
+            as: 'author',
+            attributes: ['id', 'username']
+        },
+        {
             model: TaskAssignee,
             attributes: ['id'],
             include: [{
@@ -22,20 +28,27 @@ const getTasks = async function getTasks () {
                 attributes: ['RoleTitle'],
                 include: [{
                     model: User,
-                    attributes: ['username']
+                    attributes: ['id', 'username']
                 }]
             }],
         }]
-    }).then(tasks => {
-        console.log('tasks')
-        console.log(tasks)
-        return tasks.map(task => {
-            return {
-                key: task.key,
-                title: task.title
-            }
-        })
-    })
+    }).then(tasks => tasks.map(task => ({
+        key: task.key,
+        title: task.title,
+        description: task.description,
+        version: task.version,
+        timeEstimated: task.timeEstimated,
+        timeSpent: task.timeSpent,
+        dueAt: task.dueAt,
+        createdAt: task.createdAt,
+        updatedAt: task.updatedAt,
+        author: task.author.dataValues,
+        taskAssignees: task.TaskAssignees.map(taskAssignee => ({
+            userId: taskAssignee.dataValues.UserRole.User.dataValues.id,
+            username: taskAssignee.dataValues.UserRole.User.dataValues.username,
+            role: taskAssignee.dataValues.UserRole.dataValues.RoleTitle
+        }))
+    })))
 }
 
 const createTask = async function createTask (data) {
