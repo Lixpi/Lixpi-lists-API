@@ -24,48 +24,48 @@ let fakeTime
 let currentTime
 
 before(async () => {
-    const createUsers = async () => {
-        await User.create({ username: 'user1', password: '123123' }).then((user) => {
+    const createUsers =() => {
+        User.create({ username: 'user1', password: '123123' }).then((user) => {
             loggedInUser = user
         })
-        await User.create({ username: 'user2', password: '123123' })
+        User.create({ username: 'user2', password: '123123' })
     }
 
-    const createLabels = async () => {
-        await Label.create({ color: 'green', title: 'label1' })
-        await Label.create({ color: 'purple', title: 'label2' })
+    const createLabels =() => {
+        Label.create({ color: 'green', title: 'label1' })
+        Label.create({ color: 'purple', title: 'label2' })
     }
 
-    const createRoles = async () => {
-        await Role.create({ title: 'developer' })
-        await Role.create({ title: 'designer' })
-        await Role.create({ title: 'tester' })
+    const createRoles =() => {
+        Role.create({ title: 'developer' })
+        Role.create({ title: 'designer' })
+        Role.create({ title: 'tester' })
     }
 
-    const createPriorities = async () => {
-        await Priority.create({ title: 'critical' })
-        await Priority.create({ title: 'urgent' })
-        await Priority.create({ title: 'blocking' })
+    const createPriorities =() => {
+        Priority.create({ title: 'critical' })
+        Priority.create({ title: 'urgent' })
+        Priority.create({ title: 'blocking' })
     }
 
-    const createStatuses = async () => {
-        await Status.create({ title: 'new' })
-        await Status.create({ title: 'closed' })
-        await Status.create({ title: 'in progress' })
+    const createStatuses =() => {
+        Status.create({ title: 'new' })
+        Status.create({ title: 'closed' })
+        Status.create({ title: 'in progress' })
     }
 
-    const createTypes = async () => {
-        await Type.create({ title: 'bug' })
-        await Type.create({ title: 'feature' })
+    const createTypes =() => {
+        Type.create({ title: 'bug' })
+        Type.create({ title: 'feature' })
     }
 
     return syncModels()
-        .then(createUsers)
-        .then(createLabels)
-        .then(createRoles)
-        .then(createPriorities)
-        .then(createStatuses)
-        .then(createTypes)
+        .then(function() { return createUsers })
+        .then(function() { return createLabels })
+        .then(function() { return createRoles })
+        .then(function() { return createPriorities })
+        .then(function() { return createStatuses })
+        .then(function() { return createTypes })
 })
 
 after(async () => {
@@ -181,4 +181,47 @@ describe('Task CRUD operations', () => {
         })
         expect(actualTaskPriority.dataValues.PriorityTitle).to.equal(newTaskData.priority)
     })
+
+    // it('ttt', async () => {
+    //     const newTaskData = {
+    //         title: 'Seventhtask title',
+    //         description: 'Task description',
+    //         type: 'bug',
+    //         status: 'new',
+    //         priority: 'critical',
+    //         version: '1.0',
+    //         authorId: loggedInUser.dataValues.id,
+    //         labels: ['label1', 'label2'],
+    //         timeEstimated: 124234,
+    //         timeSpent: 124234,
+    //         dueAt: currentTime,
+    //         assignees: [
+    //             { username: 'user1', role: 'developer' },
+    //             { username: 'user2', role: 'designer' }
+    //         ]
+    //     }
+
+    //     const expectedTask = {
+    //         key: 'KEY-1',
+    //         title: 'Seventhtask title',
+    //         description: 'Task description',
+    //         version: '1.0',
+    //         timeEstimated: 124234,
+    //         timeSpent: 124234,
+    //         authorId: loggedInUser.dataValues.id,
+    //         dueAt: currentTime,
+    //         updatedAt: currentTime,
+    //         createdAt: currentTime
+    //     }
+
+    //     const actualTask = await createTask(newTaskData)
+
+    //     const task = await Task.findAll({
+    //         include: [{
+    //             model: TaskAssignee
+    //         }]
+    //     })
+
+    //     debugger
+    // })
 })
