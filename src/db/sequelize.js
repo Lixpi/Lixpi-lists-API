@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const { env } = require('../config/node-config-loader')
+const { env } = require('../../config/node-config-loader')
 
 const self = module.exports
 let sequelize

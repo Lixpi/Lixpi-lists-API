@@ -4,16 +4,16 @@
     "description": "Lists API",
     "main": "server.js",
     "scripts": {
-        "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha ./**/*.js",
-        "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha ./**/*.js",
-        "dev": "ENVIRONMENT=node_dev nodemon server.js",
-        "devLocal": "ENVIRONMENT=node_dev_local nodemon server.js",
-        "lint": "eslint ./",
-        "devLint": "ENVIRONMENT=node_dev nodemon server.js --exec 'npm run lint && node'",
-        "devLintLocal": "ENVIRONMENT=node_dev_local nodemon server.js --exec 'npm run lint && node'",
-        "devInspectLocal": "ENVIRONMENT=node_dev_local nodemon --inspect=localhost:9229 server.js",
-        "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./db/db-init\").syncModels()'",
-        "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./db/db-init\").syncModels()'"
+        "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha ./src/**/*.test.js",
+        "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha ./src/**/*.test.js",
+        "dev": "ENVIRONMENT=node_dev nodemon ./src/server.js",
+        "devLocal": "ENVIRONMENT=node_dev_local nodemon ./src/server.js",
+        "lint": "eslint ./src/ ./config",
+        "devLint": "ENVIRONMENT=node_dev nodemon ./src/server.js --exec 'npm run lint && node'",
+        "devLintLocal": "ENVIRONMENT=node_dev_local nodemon ./src/server.js --exec 'npm run lint && node'",
+        "devInspectLocal": "ENVIRONMENT=node_dev_local nodemon --inspect=localhost:9229 ./src/server.js",
+        "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./src/db/db-init\").syncModels()'",
+        "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./src/db/db-init\").syncModels()'"
     },
     "dependencies": {
         "bcrypt": "*",
