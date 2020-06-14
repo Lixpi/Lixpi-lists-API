@@ -16,7 +16,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "./**/*.js"
+                "./src/**/*.test.js"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "name": "Mocha Tests",
