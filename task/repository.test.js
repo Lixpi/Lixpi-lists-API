@@ -86,7 +86,7 @@ describe('Task CRUD operations', () => {
 
     it('Should save task including relationships', async () => {
         const newTaskData = {
-            title: 'Seventhtask title',
+            title: 'Task title',
             description: 'Task description',
             type: 'bug',
             status: 'new',
@@ -105,7 +105,7 @@ describe('Task CRUD operations', () => {
 
         const expectedTask = {
             key: 'KEY-1',
-            title: 'Seventhtask title',
+            title: 'Task title',
             description: 'Task description',
             version: '1.0',
             timeEstimated: 124234,
