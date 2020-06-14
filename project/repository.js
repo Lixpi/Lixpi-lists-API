@@ -10,7 +10,7 @@ const createProject = async data => {
         description
     } = data
 
-    const projectKey = key || title.slice(0, 3)
+    const projectKey = key || title.slice(0, 3).toUpperCase()
 
     return await Project.create({
         key: projectKey,

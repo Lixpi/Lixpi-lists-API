@@ -17,6 +17,7 @@
             "--colors",
             "${workspaceFolder}/test"
         ],
+        "env": {"ENVIRONMENT": "node_test"},
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": [
             "<node_internals>/**"
