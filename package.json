@@ -4,15 +4,16 @@
     "description": "Lists API",
     "main": "server.js",
     "scripts": {
-        "manualTest": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha ./**/*.js",
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha ./**/*.js",
+        "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha ./**/*.js",
         "dev": "ENVIRONMENT=node_dev nodemon server.js",
+        "devLocal": "ENVIRONMENT=node_dev_local nodemon server.js",
         "lint": "eslint ./",
         "devLint": "ENVIRONMENT=node_dev nodemon server.js --exec 'npm run lint && node'",
-        "devInspect": "ENVIRONMENT=node_dev nodemon --inspect=0.0.0.0:9229 server.js",
-        "dbCreate": "ENVIRONMENT=node_dev node -e 'require(\"./db/db-init\").initDb()'",
-        "dbDrop": "ENVIRONMENT=node_dev node -e 'require(\"./db/db-init\").dropDb()'",
-        "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./db/db-init\").syncModels()'"
+        "devLintLocal": "ENVIRONMENT=node_dev_local nodemon server.js --exec 'npm run lint && node'",
+        "devInspectLocal": "ENVIRONMENT=node_dev_local nodemon --inspect=localhost:9229 server.js",
+        "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./db/db-init\").syncModels()'",
+        "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./db/db-init\").syncModels()'"
     },
     "dependencies": {
         "bcrypt": "*",

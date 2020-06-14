@@ -1,16 +1,16 @@
 version: '3'
 services:
-    api:
-        container_name: api
-        image: node:13
-        volumes:
-            - .:/usr/src/service
-        working_dir: /usr/src/service
-        command: npm run devInspect
-        ports:
-            - 1234:1234
-            - 3005:3000
-            - 9229:9229
+    # api:
+    #     container_name: api
+    #     image: node:13
+    #     volumes:
+    #         - .:/usr/src/service
+    #     working_dir: /usr/src/service
+    #     command: npm run devInspect
+    #     ports:
+    #         - 1234:1234
+    #         - 3005:3000
+    #         - 9229:9229
     postgres:
         image: postgres
         restart: always
