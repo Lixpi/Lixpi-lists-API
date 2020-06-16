@@ -24,7 +24,8 @@ const Session = sequelize.define('Session', mappings, {
         name: 'session_sid_index',
         method: 'BTREE',
         fields: ['sid'],
-    }]
+    }],
+    underscored: true
 })
 
 exports.mapping = mappings

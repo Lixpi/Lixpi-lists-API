@@ -27,6 +27,7 @@ const Project = sequelize.define('Project', mappings, {
         method: 'BTREE',
         fields: ['title'],
     }],
+    underscored: true
 })
 
 exports.Project = Project

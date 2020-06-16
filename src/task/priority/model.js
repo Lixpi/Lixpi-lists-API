@@ -9,6 +9,6 @@ const mappings = {
     }
 }
 
-const Priority = sequelize.define('Priority', mappings)
+const Priority = sequelize.define('Priority', mappings, { underscored: true })
 
 exports.Priority = Priority
