@@ -51,6 +51,7 @@ const Task = sequelize.define('Task', mappings, {
         method: 'BTREE',
         fields: ['title'],
     }],
+    underscored: true
 })
 
 // Adding projectKey to Task model
@@ -67,7 +68,7 @@ const UserRole = sequelize.define('UserRole', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 User.belongsToMany(Role, { through: UserRole })
 User.hasMany(UserRole)
@@ -83,7 +84,7 @@ const TaskAssignee = sequelize.define('TaskAssignee', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 Task.belongsToMany(UserRole, { through: TaskAssignee })
 Task.hasMany(TaskAssignee)
@@ -100,7 +101,7 @@ const TaskLabel = sequelize.define('TaskLabel', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 Task.belongsToMany(Label, { through: TaskLabel })
 Task.hasMany(TaskLabel)
@@ -117,7 +118,7 @@ const TaskType = sequelize.define('TaskType', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 Task.belongsToMany(Type, { through: TaskType })
 Type.belongsToMany(Task, { through: TaskType })
@@ -134,7 +135,7 @@ const TaskStatus = sequelize.define('TaskStatus', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 Task.belongsToMany(Status, { through: TaskStatus })
 Status.belongsToMany(Task, { through: TaskStatus })
@@ -151,7 +152,7 @@ const TaskPriority = sequelize.define('TaskPriority', {
         autoIncrement: true,
         allowNull: false
     }
-}, { timestamps: false })
+}, { timestamps: false, underscored: true })
 
 Task.belongsToMany(Priority, { through: TaskPriority })
 Priority.belongsToMany(Task, { through: TaskPriority })

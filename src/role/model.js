@@ -9,6 +9,6 @@ const mappings = {
     }
 }
 
-const Role = sequelize.define('Role', mappings)
+const Role = sequelize.define('Role', mappings, { underscored: true })
 
 exports.Role = Role

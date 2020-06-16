@@ -9,6 +9,7 @@ const { Priority } = require('../task/priority/model')
 const { Role } = require('../role/model')
 const { Project } = require('../project/model')
 const { Task, TaskLabel, TaskType, TaskStatus, TaskPriority, UserRole, TaskAssignee } = require('../task/model')
+const { ProjectSequence } = require('../project_sequence/model')
 
 const syncModels = async () => {
     console.log('Initializing models!')

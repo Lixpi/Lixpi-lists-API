@@ -28,6 +28,7 @@ const User = sequelize.define('User', mappings, {
             fields: ['username'],
         },
     ],
+    underscored: true
 })
 
 User.prototype.comparePassword = function (password) { // eslint-disable-line func-names

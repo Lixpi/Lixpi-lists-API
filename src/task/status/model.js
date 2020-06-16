@@ -9,6 +9,6 @@ const mappings = {
     }
 }
 
-const Status = sequelize.define('Status', mappings)
+const Status = sequelize.define('Status', mappings, { underscored: true })
 
 exports.Status = Status

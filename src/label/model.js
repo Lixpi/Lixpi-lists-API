@@ -13,6 +13,6 @@ const mappings = {
     }
 }
 
-const Label = sequelize.define('Label', mappings)
+const Label = sequelize.define('Label', mappings, { underscored: true })
 
 exports.Label = Label

@@ -9,6 +9,6 @@ const mappings = {
     }
 }
 
-const Type = sequelize.define('Type', mappings)
+const Type = sequelize.define('Type', mappings, { underscored: true })
 
 exports.Type = Type
