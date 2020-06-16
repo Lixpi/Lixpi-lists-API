@@ -2,23 +2,23 @@
 
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('Projects', [{
+        return queryInterface.bulkInsert('projects', [{
             key: 'PAR',
             title: 'Parks',
             description: '',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             key: 'REC',
             title: 'Recreation',
             description: '',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         }])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('Projects', null, {})
+        return queryInterface.bulkDelete('projects', null, {})
     }
 }

@@ -2,24 +2,24 @@
 
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('Roles', [{
+        return queryInterface.bulkInsert('roles', [{
             title: 'developer',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             title: 'designer',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             title: 'tester',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         }])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('Roles', null, {})
+        return queryInterface.bulkDelete('roles', null, {})
     }
 }

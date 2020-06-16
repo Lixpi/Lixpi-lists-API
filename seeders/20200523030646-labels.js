@@ -2,21 +2,21 @@
 
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('Labels', [{
+        return queryInterface.bulkInsert('labels', [{
             color: 'green',
             title: 'label1',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             color: 'purple',
             title: 'label2',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         }])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('Labels', null, {})
+        return queryInterface.bulkDelete('labels', null, {})
     }
 }

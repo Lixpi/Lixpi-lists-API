@@ -2,19 +2,19 @@
 
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('Types', [{
+        return queryInterface.bulkInsert('types', [{
             title: 'bug',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             title: 'feature',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         }])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('Types', null, {})
+        return queryInterface.bulkDelete('types', null, {})
     }
 }

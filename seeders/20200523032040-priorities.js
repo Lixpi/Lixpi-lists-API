@@ -2,24 +2,24 @@
 
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('Priorities', [{
+        return queryInterface.bulkInsert('priorities', [{
             title: 'critical',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             title: 'urgent',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         },
         {
             title: 'blocking',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            created_at: new Date(),
+            updated_at: new Date()
         }])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('Priorities', null, {})
+        return queryInterface.bulkDelete('priorities', null, {})
     }
 }
