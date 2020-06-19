@@ -1,5 +1,7 @@
 'use strict'
 
+const { QueryTypes } = require('sequelize')
+
 const sequelize = require('../db/sequelize')
 const { getUserByUsername } = require('../user/repository')
 const { Task, TaskAssignee, UserRole } = require('./model')
@@ -15,23 +17,23 @@ const getTask = async key => {
 const getTasks = async () => {
     return Task.findAll({
         include: [
-        {
-            model: User,
-            as: 'author',
-            attributes: ['id', 'username']
-        },
-        {
-            model: TaskAssignee,
-            attributes: ['id'],
-            include: [{
-                model: UserRole,
-                attributes: ['RoleTitle'],
+            {
+                model: User,
+                as: 'author',
+                attributes: ['id', 'username']
+            },
+            {
+                model: TaskAssignee,
+                attributes: ['id'],
                 include: [{
-                    model: User,
-                    attributes: ['id', 'username']
-                }]
-            }],
-        }]
+                    model: UserRole,
+                    attributes: ['RoleTitle'],
+                    include: [{
+                        model: User,
+                        attributes: ['id', 'username']
+                    }]
+                }],
+            }]
     }).then(tasks => tasks.map(task => ({
         key: task.key,
         title: task.title,
@@ -53,6 +55,7 @@ const getTasks = async () => {
 
 const createTask = async data => {
     const {
+        projectKey,
         title,
         description,
         version,
@@ -66,7 +69,12 @@ const createTask = async data => {
         priority,
         assignees
     } = data
-    const newKey = 'KEY-1'
+
+    const results = await sequelize.query('SELECT generate_next_seq_val(?, ?)', {
+        replacements: [projectKey, 'project_' + projectKey.toLowerCase()],
+        type: QueryTypes.SELECT
+    })
+    const newKey = results[0].generate_next_seq_val
 
 
     const userRoles = await Promise.all(
@@ -86,7 +94,8 @@ const createTask = async data => {
                 timeEstimated,
                 timeSpent,
                 dueAt,
-                authorId
+                authorId,
+                projectKey
             }, { transaction: t })
 
             await Promise.all([

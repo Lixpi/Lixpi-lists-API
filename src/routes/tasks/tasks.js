@@ -12,6 +12,7 @@ module.exports.get = async (req, res) => {
 module.exports.post = async (req, res) => {
     authMiddleware(req, res)
     const newTaskData = {
+        projectKey: req.body.projectKey,
         title: req.body.title,
         description: req.body.description,
         version: req.body.version,
