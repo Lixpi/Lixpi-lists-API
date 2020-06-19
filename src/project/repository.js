@@ -1,6 +1,5 @@
 'use strict'
 
-const sequelize = require('../db/sequelize')
 const { Project } = require('./model')
 
 const createProject = async data => {
