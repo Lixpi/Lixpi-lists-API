@@ -14,7 +14,8 @@
         "devInspectLocal": "ENVIRONMENT=node_dev_local nodemon --inspect=localhost:9229 ./src/server.js",
         "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./src/db/db-init\").syncModels()'",
         "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./src/db/db-init\").syncModels()'",
-        "seedDb": "npx sequelize-cli db:seed:all"
+        "seedDb": "npx sequelize-cli db:seed:all",
+        "runMigrations": "npx sequelize-cli db:migrate"
     },
     "dependencies": {
         "bcrypt": "*",
