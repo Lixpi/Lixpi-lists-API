@@ -4,6 +4,7 @@ const Sequelize = require('sequelize')
 const { TEXT } = Sequelize
 
 const sequelize = require('../db/sequelize')
+const { ProjectSequence } = require('../project_sequence/model')
 
 const mappings = {
     key: {
@@ -28,6 +29,19 @@ const Project = sequelize.define('Project', mappings, {
         fields: ['title'],
     }],
     underscored: true
+})
+
+Project.afterSave((project) => {
+    const sequenceName = 'project_' + project.key.toLowerCase()
+    sequelize.query('CREATE SEQUENCE ' + sequenceName)
+
+    ProjectSequence.create({
+        sequenceName: sequenceName,
+        prefix: project.key,
+        projectKey: project.key
+    })
+
+    return project
 })
 
 exports.Project = Project
