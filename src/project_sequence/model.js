@@ -24,11 +24,6 @@ const mappings = {
         allowNull: false,
         defaultValue: 1
     },
-    zeroPad: {
-        type: INTEGER,
-        allowNull: true,
-        defaultValue: 5
-    },
     projectKey: {
         type: TEXT,
         allowNull: false
