@@ -13,7 +13,7 @@ const { ProjectSequence } = require('../project_sequence/model')
 
 const syncModels = async () => {
     console.log('Initializing models!')
-    return await sequelize.sync()
+    return await sequelize.sync({ force: true })
 }
 
 module.exports = {
