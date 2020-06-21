@@ -55,7 +55,7 @@ const Task = sequelize.define('Task', mappings, {
 })
 
 // Adding projectKey to Task model
-Task.belongsTo(Project)
+Task.belongsTo(Project, { as: 'project' })
 
 // Adding authorId to Task model
 Task.belongsTo(User, { as: 'author' })
