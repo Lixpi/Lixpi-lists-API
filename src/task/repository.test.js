@@ -1,8 +1,13 @@
-const { syncModels } = require('../db/db-init')
-const sinon = require('sinon')
+'use strict'
 
+const sinon = require('sinon')
 const { expect } = require('chai')
 
+const sequelize = require('../db/sequelize')
+const { syncModels } = require('../db/db-init')
+const { generateNextSeqVal } = require('../db/functions/generate_next_seq_val')
+const { ProjectSequence } = require('../project_sequence/model')
+const { Project } = require('../project/model')
 const { Label } = require('../label/model')
 const { Role } = require('../role/model')
 const { Priority } = require('../task/priority/model')
@@ -24,68 +29,85 @@ let fakeTime
 let currentTime
 
 before(async () => {
-    const createUsers = async () => {
-        await User.create({ username: 'user1', password: '123123' }).then((user) => {
-            loggedInUser = user
-        })
-        await User.create({ username: 'user2', password: '123123' })
-    }
+    const sequenceName = 'project_pro'
+    ProjectSequence.destroy({
+        where: {
+            projectKey: 'PRO',
+            sequenceName: sequenceName
+        }
+    })
+    sequelize.query('DROP SEQUENCE ' + sequenceName).catch(function () {})
 
-    const createLabels = async () => {
-        await Label.create({ color: 'green', title: 'label1' })
-        await Label.create({ color: 'purple', title: 'label2' })
-    }
-
-    const createRoles = async () => {
-        await Role.create({ title: 'developer' })
-        await Role.create({ title: 'designer' })
-        await Role.create({ title: 'tester' })
-    }
-
-    const createPriorities = async () => {
-        await Priority.create({ title: 'critical' })
-        await Priority.create({ title: 'urgent' })
-        await Priority.create({ title: 'blocking' })
-    }
-
-    const createStatuses = async () => {
-        await Status.create({ title: 'new' })
-        await Status.create({ title: 'closed' })
-        await Status.create({ title: 'in progress' })
-    }
-
-    const createTypes = async () => {
-        await Type.create({ title: 'bug' })
-        await Type.create({ title: 'feature' })
-    }
-
-    return await syncModels()
-        .then(createUsers)
-        .then(createLabels)
-        .then(createRoles)
-        .then(createPriorities)
-        .then(createStatuses)
-        .then(createTypes)
+    sequelize.query(generateNextSeqVal)
 })
 
 after(async () => {
-    console.log('after *********************************************************************************************************\n')
+    console.log('after ****************************************\n')
 })
 
 describe('Task CRUD operations', () => {
     beforeEach( async () => {
-        console.log('beforeEach *********************************************************************************************************\n')
+        console.log('beforeEach ****************************************\n')
         fakeTime = sinon.useFakeTimers(new Date(2011,9,1).getTime());
         currentTime = new Date()
+
+        const createProject = async () => {
+            await Project.create({ key: 'PRO', title: 'project', description: 'description' })
+        }
+    
+        const createUsers = async () => {
+            await User.create({ username: 'user1', password: '123123' }).then((user) => {
+                loggedInUser = user
+            })
+            await User.create({ username: 'user2', password: '123123' })
+        }
+    
+        const createLabels = async () => {
+            await Label.create({ color: 'green', title: 'label1' })
+            await Label.create({ color: 'purple', title: 'label2' })
+        }
+    
+        const createRoles = async () => {
+            await Role.create({ title: 'developer' })
+            await Role.create({ title: 'designer' })
+            await Role.create({ title: 'tester' })
+        }
+    
+        const createPriorities = async () => {
+            await Priority.create({ title: 'critical' })
+            await Priority.create({ title: 'urgent' })
+            await Priority.create({ title: 'blocking' })
+        }
+    
+        const createStatuses = async () => {
+            await Status.create({ title: 'new' })
+            await Status.create({ title: 'closed' })
+            await Status.create({ title: 'in progress' })
+        }
+    
+        const createTypes = async () => {
+            await Type.create({ title: 'bug' })
+            await Type.create({ title: 'feature' })
+        }
+    
+        return await syncModels()
+            .then(createProject)
+            .then(createUsers)
+            .then(createLabels)
+            .then(createRoles)
+            .then(createPriorities)
+            .then(createStatuses)
+            .then(createTypes)
     })
 
     afterEach( async () => {
         fakeTime.restore();
-        console.log('afterEach *********************************************************************************************************\n')
+        console.log('afterEach ****************************************\n')
     })
 
     it('Should save task including relationships', async () => {
         const newTaskData = {
+            projectKey: 'PRO',
             title: 'Task title',
             description: 'Task description',
             type: 'bug',
@@ -104,7 +126,8 @@ describe('Task CRUD operations', () => {
         }
 
         const expectedTask = {
-            key: 'KEY-1',
+            projectKey: 'PRO',
+            key: 'PRO-1',
             title: 'Task title',
             description: 'Task description',
             version: '1.0',
@@ -120,7 +143,7 @@ describe('Task CRUD operations', () => {
 
         const taskAssignees = await TaskAssignee.findAll({
             where: {
-                TaskKey: 'KEY-1'
+                TaskKey: 'PRO-1'
             }
         })
 
@@ -151,7 +174,7 @@ describe('Task CRUD operations', () => {
 
         const taskLabels = await TaskLabel.findAll({
             where: {
-                TaskKey: 'KEY-1'
+                TaskKey: 'PRO-1'
             }
         })
         const actualTaskLabels = taskLabels.map(taskLabel => taskLabel.dataValues.LabelTitle).sort()
@@ -160,7 +183,7 @@ describe('Task CRUD operations', () => {
 
         const actualTaskType = await TaskType.findOne({
             where: {
-                TaskKey: 'KEY-1'
+                TaskKey: 'PRO-1'
             }
         })
         expect(actualTaskType.dataValues.TypeTitle).to.equal(newTaskData.type)
@@ -168,7 +191,7 @@ describe('Task CRUD operations', () => {
 
         const actualTaskStatus = await TaskStatus.findOne({
             where: {
-                TaskKey: 'KEY-1'
+                TaskKey: 'PRO-1'
             }
         })
         expect(actualTaskStatus.dataValues.StatusTitle).to.equal(newTaskData.status)
@@ -176,7 +199,7 @@ describe('Task CRUD operations', () => {
 
         const actualTaskPriority = await TaskPriority.findOne({
             where: {
-                TaskKey: 'KEY-1'
+                TaskKey: 'PRO-1'
             }
         })
         expect(actualTaskPriority.dataValues.PriorityTitle).to.equal(newTaskData.priority)
