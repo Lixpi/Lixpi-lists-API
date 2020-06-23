@@ -4,8 +4,8 @@
     "description": "Lists API",
     "main": "server.js",
     "scripts": {
-        "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha ./src/**/*.test.js",
-        "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha ./src/**/*.test.js",
+        "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha --exit ./src/**/*.test.js",
+        "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha --exit ./src/**/*.test.js",
         "dev": "ENVIRONMENT=node_dev nodemon ./src/server.js",
         "devLocal": "ENVIRONMENT=node_dev_local nodemon ./src/server.js",
         "lint": "eslint ./src/ ./config",
