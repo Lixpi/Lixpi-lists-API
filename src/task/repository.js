@@ -16,41 +16,31 @@ const getTask = async key => {
 
 const getTasks = async () => {
     return Task.findAll({
-        include: [
-            {
-                model: User,
-                as: 'author',
-                attributes: ['id', 'username']
-            },
-            {
-                model: TaskAssignee,
-                attributes: ['id'],
+        attributes: ['key', 'title', 'dueAt'],
+        include: [{
+            model: TaskAssignee,
+            attributes: ['id'],
+            include: [{
+                model: UserRole,
+                attributes: ['RoleTitle'],
                 include: [{
-                    model: UserRole,
-                    attributes: ['RoleTitle'],
-                    include: [{
-                        model: User,
-                        attributes: ['id', 'username']
-                    }]
-                }],
-            }]
-    }).then(tasks => tasks.map(task => ({
-        key: task.key,
-        title: task.title,
-        description: task.description,
-        version: task.version,
-        timeEstimated: task.timeEstimated,
-        timeSpent: task.timeSpent,
-        dueAt: task.dueAt,
-        createdAt: task.createdAt,
-        updatedAt: task.updatedAt,
-        author: task.author.dataValues,
-        taskAssignees: task.TaskAssignees.map(taskAssignee => ({
-            userId: taskAssignee.dataValues.UserRole.User.dataValues.id,
-            username: taskAssignee.dataValues.UserRole.User.dataValues.username,
-            role: taskAssignee.dataValues.UserRole.dataValues.RoleTitle
+                    model: User,
+                    attributes: ['id', 'username']
+                }]
+            }],
+        }]
+    }).then(tasks => {
+        return tasks.map(task => ({
+            key: task.key,
+            title: task.title,
+            dueAt: task.dueAt,
+            taskAssignees: task.TaskAssignees.map(taskAssignee => ({
+                userId: taskAssignee.dataValues.UserRole.User.dataValues.id,
+                username: taskAssignee.dataValues.UserRole.User.dataValues.username,
+                role: taskAssignee.dataValues.UserRole.dataValues.RoleTitle
+            }))
         }))
-    })))
+    })
 }
 
 const createTask = async data => {

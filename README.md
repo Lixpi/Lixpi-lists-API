@@ -15,7 +15,7 @@ docker-compose -f docker-compose-debug.yml up
 To re-create DB and sync models:
 ```
 npm run dropDb
-npm run createD
+npm run createDb
 npm run syncModels
 ```
 To run seeds:
