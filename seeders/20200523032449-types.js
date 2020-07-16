@@ -1,20 +1,23 @@
 'use strict';
 
+const { Type } = require('../src/task/type/model')
+
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('types', [{
-            title: 'bug',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            title: 'feature',
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            Type.create({
+                title: 'bug'
+            }),
+            Type.create({
+                title: 'feature'
+            }),
+            Type.create({
+                title: 'investigation'
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('types', null, {})
+        return Type.destroy({ where: {}, truncate: true })
     }
 }

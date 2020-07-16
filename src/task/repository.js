@@ -22,7 +22,7 @@ const getTasks = async () => {
             attributes: ['id'],
             include: [{
                 model: UserRole,
-                attributes: ['RoleTitle'],
+                attributes: ['RoleId'],
                 include: [{
                     model: User,
                     attributes: ['id', 'username']
@@ -37,7 +37,7 @@ const getTasks = async () => {
             taskAssignees: task.TaskAssignees.map(taskAssignee => ({
                 userId: taskAssignee.dataValues.UserRole.User.dataValues.id,
                 username: taskAssignee.dataValues.UserRole.User.dataValues.username,
-                role: taskAssignee.dataValues.UserRole.dataValues.RoleTitle
+                role: taskAssignee.dataValues.UserRole.dataValues.RoleId
             }))
         }))
     })

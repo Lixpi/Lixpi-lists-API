@@ -1,25 +1,23 @@
 'use strict';
 
+const { Role } = require('../src/role/model')
+
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('roles', [{
-            title: 'developer',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            title: 'designer',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            title: 'tester',
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            Role.create({
+                title: 'developer'
+            }),
+            Role.create({
+                title: 'designer'
+            }),
+            Role.create({
+                title: 'tester'
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('roles', null, {})
+        return Role.destroy({ where: {}, truncate: true })
     }
 }
