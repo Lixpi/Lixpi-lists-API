@@ -1,22 +1,22 @@
 'use strict';
 
+const { Label } = require('../src/label/model')
+
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('labels', [{
-            color: 'green',
-            title: 'label1',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            color: 'purple',
-            title: 'label2',
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            Label.create({
+                color: 'green',
+                title: 'label1'
+            }),
+            Label.create({
+                color: 'purple',
+                title: 'label2'
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('labels', null, {})
+        return Label.destroy({ where: {}, truncate: true })
     }
 }

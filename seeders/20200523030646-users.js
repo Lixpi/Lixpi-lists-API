@@ -1,27 +1,22 @@
 'use strict'
-const { v4: uuidv4 } = require('uuid')
-const bcrypt = require('bcrypt')
+
+const { User } = require('../src/user/model')
 
 module.exports = {
     up: (queryInterface) => {
-        const salt = bcrypt.genSaltSync(10)
-        return queryInterface.bulkInsert('users', [{
-            id: uuidv4(),
-            username: 'nargiza',
-            password: bcrypt.hashSync('password1', salt),
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            id: uuidv4(),
-            username: 'shelby',
-            password: bcrypt.hashSync('password2', salt),
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            User.create({
+                username: 'nargiza',
+                password: 'password'
+            }),
+            User.create({
+                username: 'shelby',
+                password: 'password'
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('users', null, {})
+        return User.destroy({ where: {}, truncate: true })
     }
 }

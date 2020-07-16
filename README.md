@@ -17,15 +17,17 @@ To re-create DB and sync models:
 npm run dropDb
 npm run createDb
 npm run syncModels
-```
-To run seeds:
-```
-npm run seedDb
+
 ```
 To runMigrations:
 ```
 npm run runMigrations
 ```
+To run seeds:
+```
+npm run seedDb
+```
+
 
 
 API documentation

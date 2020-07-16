@@ -1,24 +1,24 @@
 'use strict';
 
+const { Project } = require('../src/project/model')
+
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('projects', [{
-            key: 'PAR',
-            title: 'Parks',
-            description: '',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            key: 'REC',
-            title: 'Recreation',
-            description: '',
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            Project.create({
+                key: 'PAR',
+                title: 'Parks',
+                description: '',
+            }),
+            Project.create({
+                key: 'REC',
+                title: 'Recreation',
+                description: '',
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('projects', null, {})
+        return Project.destroy({ where: {}, truncate: true })
     }
 }

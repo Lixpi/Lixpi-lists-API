@@ -18,7 +18,8 @@
         "dropDbLocal": "PGPASSWORD=example dropdb -h localhost -p 5432 -U postgres lists",
         "syncModels": "ENVIRONMENT=node_dev node -e 'require(\"./src/db/db-init\").syncModels()'",
         "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./src/db/db-init\").syncModels()'",
-        "seedDb": "npx sequelize-cli db:seed:all",
+        "seedDb": "ENVIRONMENT=node_dev npx sequelize-cli db:seed:all",
+        "seedDbLocal": "ENVIRONMENT=node_dev_local npx sequelize-cli db:seed:all",
         "runMigrations": "npx sequelize-cli db:migrate"
     },
     "mocha": {

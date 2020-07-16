@@ -44,4 +44,6 @@ Project.afterSave((project) => {
     return project
 })
 
+// TODO: add afterDestroy hook and drop all sequences
+
 exports.Project = Project

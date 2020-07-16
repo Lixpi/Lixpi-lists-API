@@ -1,25 +1,23 @@
 'use strict';
 
+const { Priority } = require('../src/task/priority/model')
+
 module.exports = {
     up: (queryInterface) => {
-        return queryInterface.bulkInsert('priorities', [{
-            title: 'critical',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            title: 'urgent',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        {
-            title: 'blocking',
-            created_at: new Date(),
-            updated_at: new Date()
-        }])
+        return Promise.all([
+            Priority.create({
+                title: 'critical'
+            }),
+            Priority.create({
+                title: 'urgent'
+            }),
+            Priority.create({
+                title: 'blocker'
+            })
+        ])
     },
 
     down: (queryInterface) => {
-        return queryInterface.bulkDelete('priorities', null, {})
+        return Priority.destroy({ where: {}, truncate: true })
     }
 }
