@@ -82,6 +82,18 @@ app.get('/logout', logoutRoute.get)
 app.get('/testauth', testAuthRoute.get)
 app.post('/register', registerRoute.post)
 
+const { UserB } = require('./user/model')
+app.get('/users', async (req, res) => {
+    // var users = await new UserB().login('nargiza', 'password');
+    UserB.login('nargiza', 'password').then((user) => {
+        res.json(user)
+    }).catch(UserB.NotFoundError, () => {
+        res.json(400, {error: 'Not found'})
+    }).catch((error) => {
+        console.error(error)
+    })
+})
+
 app.listen(3000, '0.0.0.0', () => {
     console.log('Listening on localhost:3000')
 })
