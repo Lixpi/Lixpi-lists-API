@@ -7,4 +7,10 @@ const knex = require('knex')({
         database : 'lists'
     }
 })
-module.exports = require('bookshelf')(knex)
+
+const bookshelf = require('bookshelf')(knex)
+
+module.exports = {
+    knex, 
+    bookshelf
+}

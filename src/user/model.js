@@ -1,10 +1,12 @@
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
+
 const Promise = require('bluebird')
+const bcryptB = Promise.promisifyAll(require('bcrypt'))
 
 const Sequelize = require('sequelize')
 const sequelize = require('../db/sequelize')
-const bookshelf = require('../db/bookshelf')
+const { bookshelf } = require('../db/bookshelf')
 
 //---------------------- Bookshelf ----------------------//
 
@@ -12,10 +14,10 @@ const UserB = bookshelf.model('User', {
     tableName: 'users',
 }, {
     login: Promise.method((username, password) => {
-        return new this({username})
+        return new this.UserB({username})
             .fetch()
             .tap((user) => {
-                return bcrypt.compareAsync(password, user.get('password'))
+                return bcryptB.compareAsync(password, user.get('password'))
                     .then((valid) => {
                         if (!valid) throw new Error('Invalid password')
                     })
