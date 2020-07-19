@@ -3,9 +3,7 @@ const session = require('express-session')
 const cors = require('cors')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const SequelizeStore = require('connect-session-sequelize')(session.Store)
 
-const sequelize = require('./db/sequelize')
 const userQueries = require('./user/repository')
 
 const indexRoute = require('./routes/index')
@@ -18,6 +16,10 @@ const testAuthRoute = require('./routes/testauth')
 const registerRoute = require('./routes/register')
 
 const { Session } = require('./session/model')
+
+
+const KnexSessionStore = require('connect-session-knex')(session)
+const { knex } = require('./db/bookshelf')
 
 const app = express()
 app.use(express.json())
@@ -63,9 +65,9 @@ app.use(session({
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000,
     },
-    store: new SequelizeStore({
-        db: sequelize,
-        table: 'Session',
+    store: new KnexSessionStore({
+        knex,
+        tablename: 'sessions'
     }),
 }))
 app.use(passport.initialize())
