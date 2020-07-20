@@ -20,7 +20,8 @@
         "syncModelsLocal": "ENVIRONMENT=node_dev_local node -e 'require(\"./src/db/db-init\").syncModels()'",
         "seedDb": "ENVIRONMENT=node_dev npx sequelize-cli db:seed:all",
         "seedDbLocal": "ENVIRONMENT=node_dev_local npx sequelize-cli db:seed:all",
-        "runMigrations": "npx sequelize-cli db:migrate"
+        "runMigrations": "npx sequelize-cli db:migrate",
+        "runKnexMigrations": "ENVIRONMENT=node_dev knex migrate:latest"
     },
     "mocha": {
         "mochaExplorer.launcherScript": "node_modules/mocha-explorer-launcher-scripts/vscode-test",

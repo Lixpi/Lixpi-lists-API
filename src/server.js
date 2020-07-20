@@ -19,7 +19,7 @@ const { Session } = require('./session/model')
 
 
 const KnexSessionStore = require('connect-session-knex')(session)
-const { knex } = require('./db/bookshelf')
+const { knex } = require('./db/knex')
 
 const app = express()
 app.use(express.json())
@@ -35,7 +35,11 @@ const passportConfig = (passport) => {
     })
     passport.deserializeUser((id, done) => Promise.resolve()
         .then(async () => {
+            // console.log('id')
+            // console.log(id)
             const user = await userQueries.getUserById(id)
+            // console.log('user')
+            // console.log(user)
 
             done(null, user)
         })
@@ -83,18 +87,6 @@ app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)
 app.get('/testauth', testAuthRoute.get)
 app.post('/register', registerRoute.post)
-
-const { UserB } = require('./user/model')
-app.get('/users', async (req, res) => {
-    // var users = await new UserB().login('nargiza', 'password');
-    UserB.login('nargiza', 'password').then((user) => {
-        res.json(user)
-    }).catch(UserB.NotFoundError, () => {
-        res.json(400, {error: 'Not found'})
-    }).catch((error) => {
-        console.error(error)
-    })
-})
 
 app.listen(3000, '0.0.0.0', () => {
     console.log('Listening on localhost:3000')
