@@ -12,6 +12,11 @@ const { knex } = require('../db/knex')
 
 const User = {
     tableName: 'users',
+    selectBy: Promise.method((selector, value) => {
+        return knex(this.User.tableName).where({ [selector] : value }).select('id', 'username', 'password')
+        // return knex.select('username', 'password').from(this.User.tableName)
+        // return knex(this.User.tableName).insert({username, password: passwordHash})
+    }),
     create: Promise.method((username, password) => {
         console.log('this')
         console.log(this)
@@ -33,7 +38,20 @@ const User = {
         //                 if (!valid) throw new Error('Invalid password')
         //             })
         //     })
-    })
+    }),
+    comparePassword: function (password, userPassword) { // eslint-disable-line func-names
+        console.log('password!!')
+        console.log(password)
+        console.log('userPassword!!')
+        console.log(userPassword)
+        console.log(bcrypt.compareSync(password, userPassword))
+        return Promise.resolve()
+            // .then(() => bcrypt.compareSync(password, this.password))
+            .then(() => bcrypt.compareSync(password, userPassword))
+            .catch((err) => {
+                return err
+            })
+    }
 }
 
 

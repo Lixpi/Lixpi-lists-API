@@ -1,22 +1,26 @@
-const { UserB } = require('./model')
+const { User } = require('./model')
 
 
-exports.getUserById = id => new UserB({id})
-  .fetch()
-  .then(function(model) {
-    // outputs 'Slaughterhouse Five'
-    console.log('lajdlfkajsldfjasklf')
-    console.log(model.get('username'));
-  });
+exports.getUserById = async id => await User.selectBy('id', id)
+
+exports.getUserByUsername = async username => await User.selectBy('username', username)
+
+// exports.getUserById = id => new User({id})
+//   .fetch()
+//   .then(function(model) {
+//     // outputs 'Slaughterhouse Five'
+//     console.log('lajdlfkajsldfjasklf')
+//     console.log(model.get('username'));
+//   });
 
 
-exports.getUserByUsername = username => new UserB({username})
-  .fetch()
-  .then(function(model) {
-      console.log('qqqlajdlfkajsldfjasklf')
-    // outputs 'Slaughterhouse Five'
-    console.log(model.get('username'));
-  });
+// exports.getUserByUsername = username => new User({username})
+//   .fetch()
+//   .then(function(model) {
+//       console.log('qqqlajdlfkajsldfjasklf')
+//     // outputs 'Slaughterhouse Five'
+//     console.log(model.get('username'));
+//   });
 
 
 // new UserB({id})
