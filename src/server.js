@@ -17,6 +17,9 @@ const registerRoute = require('./routes/register')
 
 const { Session } = require('./session/model')
 
+//TEMP
+const { User } = require('./user/model')
+
 
 const KnexSessionStore = require('connect-session-knex')(session)
 const { knex } = require('./db/knex')
@@ -52,10 +55,14 @@ const passportConfig = (passport) => {
     (req, username, password, done) => Promise.resolve()
         .then(async () => {
             const user = await userQueries.getUserByUsername(username)
-            if (!user || !await user.comparePassword(password)) {
+            console.log('user!!!!!!!!!!!!!!!!!!')
+            console.log(user)
+            // if (!user || !await user.comparePassword(password)) {
+            // TEMP
+            if (!user || !await User.comparePassword(password, user[0].password)) {
                 return done(null, null)
             }
-            return done(null, user)
+            return done(null, user[0])
         })
         .catch(done),
     ))
