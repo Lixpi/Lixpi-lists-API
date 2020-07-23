@@ -1,58 +1,84 @@
 const _ = require('lodash')
-const bcrypt = require('bcrypt')
-
 const Promise = require('bluebird')
-const bcryptB = Promise.promisifyAll(require('bcrypt'))
+const bcrypt = Promise.promisifyAll(require('bcrypt'))
 
-const Sequelize = require('sequelize')
-const sequelize = require('../db/sequelize')
 const { knex } = require('../db/knex')
 
-//---------------------- Bookshelf ----------------------//
 
-const User = {
-    tableName: 'users',
-    selectBy: Promise.method((selector, value) => {
-        return knex(this.User.tableName).where({ [selector] : value }).select('id', 'username', 'password')
-        // return knex.select('username', 'password').from(this.User.tableName)
-        // return knex(this.User.tableName).insert({username, password: passwordHash})
-    }),
-    create: Promise.method((username, password) => {
-        console.log('this')
-        console.log(this)
-        const salt = bcrypt.genSaltSync(10)
-        const passwordHash = bcrypt.hashSync(password, salt)
-        return knex(this.User.tableName).insert({username, password: passwordHash})
-        // return new this.User.forge({ username: _.trim(username), password: passwordHash}).save().then((user) => {
-        //     console.log('user model')
-        //     console.log(user)
-        //     //...
-        // })
-    }),
-    login: Promise.method((username, password) => {
-        // return new this.User({username})
-        //     .fetch()
-        //     .tap((user) => {
-        //         return bcryptB.compareAsync(password, user.get('password'))
-        //             .then((valid) => {
-        //                 if (!valid) throw new Error('Invalid password')
-        //             })
-        //     })
-    }),
-    comparePassword: function (password, userPassword) { // eslint-disable-line func-names
-        console.log('password!!')
-        console.log(password)
-        console.log('userPassword!!')
-        console.log(userPassword)
-        console.log(bcrypt.compareSync(password, userPassword))
-        return Promise.resolve()
-            // .then(() => bcrypt.compareSync(password, this.password))
-            .then(() => bcrypt.compareSync(password, userPassword))
-            .catch((err) => {
-                return err
-            })
+class User {
+    static tableName = 'users'
+
+    constructor(values = {}) {
+        Object.assign(this, values)
+    }
+
+    static async findById(id) {
+
+        const df =  await knex(this.tableName).where({ id }).first()
+        const instance = this.build(df)
+        return instance
+    }
+
+    static async findByUsername(options) {
+
+    }
+
+    static build(values) {
+        return new this(values);
+    }
+
+    set(values) {
+        for (const key in values) {
+            this.set(key, values[key]);
+        }
     }
 }
+
+
+
+// const User = {
+//     tableName: 'users',
+//     selectBy: Promise.method((selector, value) => {
+//         return knex(this.User.tableName).where({ [selector] : value }).select('id', 'username', 'password')
+//         // return knex.select('username', 'password').from(this.User.tableName)
+//         // return knex(this.User.tableName).insert({username, password: passwordHash})
+//     }),
+//     create: Promise.method((username, password) => {
+//         console.log('this')
+//         console.log(this)
+//         const salt = bcrypt.genSaltSync(10)
+//         const passwordHash = bcrypt.hashSync(password, salt)
+//         return knex(this.User.tableName).insert({username, password: passwordHash})
+//         // return new this.User.forge({ username: _.trim(username), password: passwordHash}).save().then((user) => {
+//         //     console.log('user model')
+//         //     console.log(user)
+//         //     //...
+//         // })
+//     }),
+//     login: Promise.method((username, password) => {
+//         // return new this.User({username})
+//         //     .fetch()
+//         //     .tap((user) => {
+//         //         return bcryptB.compareAsync(password, user.get('password'))
+//         //             .then((valid) => {
+//         //                 if (!valid) throw new Error('Invalid password')
+//         //             })
+//         //     })
+//     }),
+//     comparePassword: function (password, userPassword) { // eslint-disable-line func-names
+//         console.log('password!!')
+//         console.log(password)
+//         console.log('userPassword!!')
+//         console.log(userPassword)
+//         console.log(bcrypt.compareSync(password, userPassword))
+//         return Promise.resolve()
+//             // .then(() => bcrypt.compareSync(password, this.password))
+//             .then(() => bcrypt.compareSync(password, userPassword))
+//             .catch((err) => {
+//                 return err
+//             })
+//     }
+// }
 
 
 // const UserB = bookshelf.model('User', {

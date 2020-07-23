@@ -18,7 +18,11 @@ const registerRoute = require('./routes/register')
 const { Session } = require('./session/model')
 
 //TEMP
-const { User } = require('./user/model')
+const { User } = require('./user/model');
+
+(async () => {
+    const qq = await User.findById('ab1c8aa3-e54e-42b8-a9cc-4d41617046cf')
+})()
 
 
 const KnexSessionStore = require('connect-session-knex')(session)
