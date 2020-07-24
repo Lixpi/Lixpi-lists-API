@@ -1,9 +1,11 @@
 const { User } = require('./model')
 
 
-exports.getUserById = async id => await User.selectBy('id', id)
+exports.getUserById = async id => await User.findById(id)
 
-exports.getUserByUsername = async username => await User.selectBy('username', username)
+exports.getUserByUsername = async username => await User.findByUsername(username)
+
+
 
 // exports.getUserById = id => new User({id})
 //   .fetch()
