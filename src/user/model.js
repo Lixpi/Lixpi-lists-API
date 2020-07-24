@@ -9,28 +9,40 @@ class User {
     static tableName = 'users'
 
     constructor(values = {}) {
-        Object.assign(this, values)
+        Object.assign(this, values
+            , this.comparePassword // TODO refactor this crap
+        )
+    }
+
+    static init(values) {
+        // return new this(values)
+        let qqq = new this(values)
+        qqq.comparePassword = this.comparePassword
+        return qqq
     }
 
     static async findById(id) {
-
-        const df =  await knex(this.tableName).where({ id }).first()
-        const instance = this.build(df)
-        return instance
+        const values =  await knex(this.tableName).where({ id }).first()
+        return this.init(values)
     }
 
-    static async findByUsername(options) {
-
+    static async findByUsername(username) {
+        const values =  await knex(this.tableName).where({ username }).first()
+        return this.init(values)
     }
 
-    static build(values) {
-        return new this(values);
-    }
+    // set(values) {
+    //     for (const key in values) {
+    //         this.set(key, values[key]);
+    //     }
+    // }
 
-    set(values) {
-        for (const key in values) {
-            this.set(key, values[key]);
-        }
+    static comparePassword (password) { // eslint-disable-line func-names
+        return Promise.resolve()
+            .then(() => bcrypt.compareSync(password, this.password))
+            .catch((err) => {
+                return err
+            })
     }
 }
 

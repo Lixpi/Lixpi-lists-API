@@ -17,14 +17,6 @@ const registerRoute = require('./routes/register')
 
 const { Session } = require('./session/model')
 
-//TEMP
-const { User } = require('./user/model');
-
-(async () => {
-    const qq = await User.findById('ab1c8aa3-e54e-42b8-a9cc-4d41617046cf')
-})()
-
-
 const KnexSessionStore = require('connect-session-knex')(session)
 const { knex } = require('./db/knex')
 
@@ -42,12 +34,7 @@ const passportConfig = (passport) => {
     })
     passport.deserializeUser((id, done) => Promise.resolve()
         .then(async () => {
-            // console.log('id')
-            // console.log(id)
             const user = await userQueries.getUserById(id)
-            // console.log('user')
-            // console.log(user)
-
             done(null, user)
         })
         .catch(done))
@@ -59,14 +46,10 @@ const passportConfig = (passport) => {
     (req, username, password, done) => Promise.resolve()
         .then(async () => {
             const user = await userQueries.getUserByUsername(username)
-            console.log('user!!!!!!!!!!!!!!!!!!')
-            console.log(user)
-            // if (!user || !await user.comparePassword(password)) {
-            // TEMP
-            if (!user || !await User.comparePassword(password, user[0].password)) {
+            if (!user || !await user.comparePassword(password)) {
                 return done(null, null)
             }
-            return done(null, user[0])
+            return done(null, user)
         })
         .catch(done),
     ))
