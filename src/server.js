@@ -4,8 +4,6 @@ const cors = require('cors')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 
-const userQueries = require('./user/repository')
-
 const indexRoute = require('./routes/index')
 const projectsRoute = require('./routes/projects/projects')
 const tasksRoute = require('./routes/tasks/tasks')
@@ -15,10 +13,9 @@ const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
 const registerRoute = require('./routes/register')
 
-const { Session } = require('./session/model')
-
 const KnexSessionStore = require('connect-session-knex')(session)
 const { knex } = require('./db/knex')
+const { User } = require('./user/model')
 
 const app = express()
 app.use(express.json())
@@ -34,7 +31,7 @@ const passportConfig = (passport) => {
     })
     passport.deserializeUser((id, done) => Promise.resolve()
         .then(async () => {
-            const user = await userQueries.getUserById(id)
+            const user = await User.findById(id)
             done(null, user)
         })
         .catch(done))
@@ -45,7 +42,7 @@ const passportConfig = (passport) => {
     },
     (req, username, password, done) => Promise.resolve()
         .then(async () => {
-            const user = await userQueries.getUserByUsername(username)
+            const user = await User.findByUsername(username)
             if (!user || !await user.comparePassword(password)) {
                 return done(null, null)
             }

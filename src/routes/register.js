@@ -4,13 +4,8 @@ const { User } = require('../user/model')
 const { authenticateWithSession } = require('../middleware/auth')
 
 module.exports.post = async (req, res, next) => {
-    // Save with no arguments
-    // console.log('user route')
-    await User.create(req.body.username, req.body.password).then((user) => {
-        console.log('user route')
-        console.log(user)
-        res.send('aldfj')
-        //...
+    await User.create({username: req.body.username, password: req.body.password}).then((user) => {
+        res.send('User is created.')
     })
 
     // await User.create({ username: req.body.username, password: req.body.password })
