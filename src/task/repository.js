@@ -3,7 +3,7 @@
 const { QueryTypes } = require('sequelize')
 
 const sequelize = require('../db/sequelize')
-const { getUserByUsername } = require('../user/repository')
+// const { getUserByUsername } = require('../user/repository')
 const { Task, TaskAssignee, UserRole } = require('./model')
 const { User } = require('../user/model')
 
@@ -68,10 +68,10 @@ const createTask = async data => {
 
 
     const userRoles = await Promise.all(
-        assignees.map(assignee =>
-            getUserByUsername(assignee.username)
-                .then(user => user.addRole(assignee.role))
-        )
+        // assignees.map(assignee =>
+        //     getUserByUsername(assignee.username)
+        //         .then(user => user.addRole(assignee.role))
+        // )
     )
 
     try {
