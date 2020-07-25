@@ -16,11 +16,7 @@ module.exports = async function authMiddleware(req, res) {
 * @param {Function} next
 */
 const authenticate = (req, res, next) => new Promise((resolve, reject) => {
-    console.log('authenticate')
     passport.authenticate('local', (err, user) => {
-
-        console.log('err')
-        console.log(err)
         if (err) {
             return reject(err)
         }
@@ -74,10 +70,7 @@ const saveSession = req => new Promise((resolve, reject) => {
 })
 
 module.exports.authenticateWithSession = async (req, res, next) => {
-    console.log('user')
     const user = await authenticate(req, res, next)
-    console.log('user')
-    console.log(user)
 
     if (!user) {
         return 'Invalid credentials.'
