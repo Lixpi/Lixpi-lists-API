@@ -4,6 +4,7 @@ const { knex } = require('../db/knex')
 
 class Project {
     static tableName = 'projects'
+    static sequencesTableName = 'project_sequences'
 
     constructor(values = {}) {
         Object.assign(this, values)
@@ -24,96 +25,26 @@ class Project {
     }
 
     static async create(values) {
-
         let { key, title, description } = values
-
         const projectKey = key || title.slice(0, 3).toUpperCase()
+        const sequenceName = `project_${projectKey}`
+        let createdProject = {}
 
-        // const sequenceName = 'project_' + project.key.toLowerCase()
-        // sequelize.query('CREATE SEQUENCE ' + sequenceName)
+        await knex(this.tableName)
+            .returning(['id', 'key', 'title', 'description'])
+            .insert({key: projectKey, title, description})
+            .then((project) => {
+                createdProject = this.init(project[0])
+                return knex.raw('CREATE SEQUENCE ' + sequenceName)
+            })
+            .then(() => {
+                return knex(this.sequencesTableName).insert({projectKey, nextValue: 1})
+            })
 
-        // ProjectSequence.create({
-        //     sequenceName: sequenceName,
-        //     prefix: project.key,
-        //     projectKey: project.key
-        // })
-
-        return knex(this.tableName).insert({key: projectKey, title, description})
+        return createdProject
     }
 }
 
 // // TODO: add afterDestroy hook and drop all sequences
 
 module.exports = { Project }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 'use strict'
-
-// const Sequelize = require('sequelize')
-// const { TEXT } = Sequelize
-
-// const sequelize = require('../db/sequelize')
-// const { ProjectSequence } = require('../project_sequence/model')
-
-// const mappings = {
-//     key: {
-//         type: TEXT,
-//         primaryKey: true,
-//         allowNull: false
-//     },
-//     title: {
-//         type: TEXT,
-//         allowNull: false
-//     },
-//     description: {
-//         type: TEXT,
-//         allowNull: true
-//     }
-// }
-
-// const Project = sequelize.define('Project', mappings, {
-//     indexes: [{
-//         name: 'project_title_index',
-//         method: 'BTREE',
-//         fields: ['title'],
-//     }],
-//     underscored: true
-// })
-
-// Project.afterSave((project) => {
-//     const sequenceName = 'project_' + project.key.toLowerCase()
-//     sequelize.query('CREATE SEQUENCE ' + sequenceName)
-
-//     ProjectSequence.create({
-//         sequenceName: sequenceName,
-//         prefix: project.key,
-//         projectKey: project.key
-//     })
-
-//     return project
-// })
-
-// // TODO: add afterDestroy hook and drop all sequences
-
-// module.exports = { Project }
