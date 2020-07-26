@@ -11,9 +11,6 @@ module.exports.post = async (req, res) => {
         description: req.body.description
     }
     const project = await Project.create(newProjectData).then(project => {
-        console.log('project')
-        console.log(project)
+        res.status(200).json(project)
     })
-
-    res.status(200).json(project)
 }
