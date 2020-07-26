@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize')
 
 const sequelize = require('../db/sequelize')
-const { Project } = require('../project/model')
+// const { Project } = require('../project/model')
 // const { User } = require('../user/model')
 const { Role } = require('../role/model')
 const { Label } = require('../label/model')
@@ -55,7 +55,7 @@ const Task = sequelize.define('Task', mappings, {
 })
 
 // Adding projectKey to Task model
-Task.belongsTo(Project, { as: 'project' })
+// Task.belongsTo(Project, { as: 'project' })
 
 // // Adding authorId to Task model
 // Task.belongsTo(User, { as: 'author' })

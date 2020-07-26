@@ -1,6 +1,6 @@
-const _ = require('lodash')
-const Promise = require('bluebird')
-const bcrypt = Promise.promisifyAll(require('bcrypt'))
+'use strict'
+
+const bcrypt = require('bcrypt')
 
 const { knex } = require('../db/knex')
 
