@@ -38,7 +38,7 @@ class Project {
                 return knex.raw('CREATE SEQUENCE ' + sequenceName)
             })
             .then(() => {
-                return knex(this.sequencesTableName).insert({projectKey, nextValue: 1})
+                return knex(this.sequencesTableName).insert({project_key: projectKey, next_value: 1})
             })
 
         return createdProject

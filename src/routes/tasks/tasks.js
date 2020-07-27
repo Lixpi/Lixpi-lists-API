@@ -1,12 +1,12 @@
 'use strict'
 
 const authMiddleware = require('../../middleware/auth')
-const { getTasks, createTask } = require('../../task/repository')
+const { Task } = require('../../task/model')
 
 module.exports.get = async (req, res) => {
     authMiddleware(req, res)
-    const tasks = await getTasks()
-    res.status(200).json(tasks)
+    // const tasks = await getTasks()
+    // res.status(200).json(tasks)
 }
 
 module.exports.post = async (req, res) => {
@@ -26,6 +26,6 @@ module.exports.post = async (req, res) => {
         status: req.body.status,
         priority: req.body.priority
     }
-    const task = await createTask(newTaskData)
+    const task = await Task.create(newTaskData)
     res.status(200).json(task)
 }
