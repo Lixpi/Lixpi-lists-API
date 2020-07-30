@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-  return knex.schema.createTable('sessions', function(table) {
+    return knex.schema.createTable('sessions', function(table) {
         table.string('sid').primary()
         table.json('sess')
         table.dateTime('expired').notNull()
@@ -9,5 +9,5 @@ exports.up = function(knex) {
 }
 
 exports.down = function(knex) {
-   return knex.schema.dropTable('sessions');
+    return knex.schema.dropTable('sessions');
 }
