@@ -25,7 +25,7 @@ class Task {
 
     static async create(values) {
         const {
-            projectKey,
+            projectId,
             title,
             description,
             version,
@@ -40,15 +40,8 @@ class Task {
             assignees
         } = values
 
-        // const newKey = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', [projectKey]).then((result) => result.rows[0].project_generate_next_sequence_val_procedure)
-        // console.log('newKey')
-        // console.log(newKey)
-
-        const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', [projectKey])
+        const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
         const newKey = newKeyResponse.rows[0].project_generate_next_sequence_val_procedure
-        console.log('newKey')
-        console.log(newKey)
-
 
         // let { key, title, description } = values
         // const projectKey = key || title.slice(0, 3).toUpperCase()
@@ -65,19 +58,10 @@ class Task {
                 time_estimated: timeEstimated,
                 time_spent: timeSpent,
                 due_at: dueAt,
-                // author_id: authorId,
-                // project_key: projectKey
+                author_id: authorId,
+                project_id: projectId
             })
-            // .then((project) => {
-            //     createdTask = this.init(project[0])
-            //     return knex.raw('CREATE SEQUENCE ' + sequenceName)
-            // })
-            // .then(() => {
-            //     return knex(this.sequencesTableName).insert({projectKey, nextValue: 1})
-            // })
 
-        console.log('createdTask')
-        console.log(createdTask)
         return createdTask
 
 
