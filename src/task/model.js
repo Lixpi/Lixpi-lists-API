@@ -4,6 +4,8 @@ const { knex } = require('../db/knex')
 
 class Task {
     static tableName = 'tasks'
+    static labelsTableName = 'task_labels'
+    static assigneesTableName = 'task_assignees'
 
     constructor(values = {}) {
         Object.assign(this, values)
@@ -33,142 +35,92 @@ class Task {
             timeSpent,
             dueAt,
             authorId,
-            labels,
-            type,
-            status,
-            priority,
+            typeId,
+            statusId,
+            priorityId,
+            labelIds,
             assignees
         } = values
 
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
-        const newKey = newKeyResponse.rows[0].project_generate_next_sequence_val_procedure
+        const newKey = newKeyResponse.rows.shift().project_generate_next_sequence_val_procedure
+
+        const newTaskData = {
+            key: newKey,
+            title,
+            description,
+            version,
+            time_estimated: timeEstimated,
+            time_spent: timeSpent,
+            due_at: dueAt,
+            author_id: authorId,
+            project_id: projectId,
+            priority_id: priorityId,
+            type_id: typeId,
+            status_id: statusId,
+        }
 
         // let { key, title, description } = values
         // const projectKey = key || title.slice(0, 3).toUpperCase()
         // const sequenceName = `project_${projectKey}`
         // let createdTask = {}
 
-        let createdTask = await knex(this.tableName)
-            .returning(['id', 'key', 'title', 'description', 'version', 'time_estimated', 'time_spent', 'due_at', 'created_at', 'updated_at'])
-            .insert({
-                key: newKey,
-                title,
-                description,
-                version,
-                time_estimated: timeEstimated,
-                time_spent: timeSpent,
-                due_at: dueAt,
-                author_id: authorId,
-                project_id: projectId
-            })
-
-        return createdTask
-
-
-        // try {
-        //     return await sequelize.transaction(async (t) => {
-        //         const task = await Task.create({
-        //             key: newKey,
-        //             title,
-        //             description,
-        //             version,
-        //             timeEstimated,
-        //             timeSpent,
-        //             dueAt,
-        //             authorId,
-        //             projectKey
-        //         }, { transaction: t })
-
-        //         await Promise.all([
-        //             ...userRoles.map(userRole => task.addUserRoles(userRole, { transaction: t })),
-        //             task.addLabels(labels, { transaction: t }),
-        //             task.addType(type, { transaction: t }),
-        //             task.addStatus(status, { transaction: t }),
-        //             task.addPriority(priority, { transaction: t })
-        //         ])
-
-        //         return task
+        // let createdTask = await knex(this.tableName)
+        //     .returning(['id', 'key', 'title', 'description', 'version', 'time_estimated', 'time_spent', 'due_at', 'created_at', 'updated_at'])
+        //     .insert({
+        //         key: newKey,
+        //         title,
+        //         description,
+        //         version,
+        //         time_estimated: timeEstimated,
+        //         time_spent: timeSpent,
+        //         due_at: dueAt,
+        //         author_id: authorId,
+        //         project_id: projectId
         //     })
-        // } catch (error) {
-        //     console.log(error)
-        // }
+
+        // return createdTask
 
 
+        try {
+            const trxProvider = knex.transactionProvider()
+            const trx = await trxProvider()
+            try {
+                const taskIds = await trx(this.tableName).insert(newTaskData, 'id')
+                const taskId = taskIds.shift()
 
+                const taskLabels = labelIds.map(labelId => ({
+                    task_id: taskId,
+                    label_id: labelId
+                }))
+                await  trx(this.labelsTableName).insert(taskLabels)
+
+                const taskAssignees = assignees.map(assignee => ({
+                    task_id: taskId,
+                    user_id: assignee.userId,
+                    assignee_role_id: assignee.roleId
+                }))
+                await  trx(this.assigneesTableName).insert(taskAssignees)
+
+                trx.commit()
+            }
+            catch (e) {
+                trx.rollback()
+                throw e
+            }
+        }
+        catch (e) {
+            throw e
+        }
     }
 }
-
-// // TODO: add afterDestroy hook and drop all sequences
 
 module.exports = { Task }
 
 
 
 
-// const createTask = async data => {
-//     const {
-//         projectKey,
-//         title,
-//         description,
-//         version,
-//         timeEstimated,
-//         timeSpent,
-//         dueAt,
-//         authorId,
-//         labels,
-//         type,
-//         status,
-//         priority,
-//         assignees
-//     } = data
 
-//     const results = await sequelize.query('SELECT generate_next_seq_val(?, ?)', {
-//         replacements: [projectKey, 'project_' + projectKey.toLowerCase()],
-//         type: QueryTypes.SELECT
-//     })
-//     const newKey = results[0].generate_next_seq_val
-
-
-//     const userRoles = await Promise.all(
-//         // assignees.map(assignee =>
-//         //     getUserByUsername(assignee.username)
-//         //         .then(user => user.addRole(assignee.role))
-//         // )
-//     )
-
-//     try {
-//         return await sequelize.transaction(async (t) => {
-//             const task = await Task.create({
-//                 key: newKey,
-//                 title,
-//                 description,
-//                 version,
-//                 timeEstimated,
-//                 timeSpent,
-//                 dueAt,
-//                 authorId,
-//                 projectKey
-//             }, { transaction: t })
-
-//             await Promise.all([
-//                 ...userRoles.map(userRole => task.addUserRoles(userRole, { transaction: t })),
-//                 task.addLabels(labels, { transaction: t }),
-//                 task.addType(type, { transaction: t }),
-//                 task.addStatus(status, { transaction: t }),
-//                 task.addPriority(priority, { transaction: t })
-//             ])
-
-//             return task
-//         })
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-
-
-
-// 'use strict'
 
 // const Sequelize = require('sequelize')
 
