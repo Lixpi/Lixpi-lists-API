@@ -20,11 +20,11 @@ module.exports.post = async (req, res) => {
         timeSpent: req.body.timeSpent,
         dueAt: req.body.dueAt,
         authorId: req.user.id,
-        assignees: req.body.assignees,
-        labels: req.body.labels,
-        type: req.body.type,
-        status: req.body.status,
-        priority: req.body.priority
+        typeId: req.body.typeId,
+        statusId: req.body.statusId,
+        priorityId: req.body.priorityId,
+        labelIds: req.body.labelIds,
+        assignees: req.body.assignees
     }
     const task = await Task.create(newTaskData)
     res.status(200).json(task)
