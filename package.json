@@ -17,7 +17,9 @@
         "dropDb": "PGPASSWORD=example dropdb -h postgres -p 5432 -U postgres lists",
         "dropDbLocal": "PGPASSWORD=example dropdb -h localhost -p 5432 -U postgres lists",
         "migrations": "ENVIRONMENT=node_dev knex migrate:latest",
-        "migrationsLocal": "ENVIRONMENT=node_dev_local knex migrate:latest"
+        "migrationsLocal": "ENVIRONMENT=node_dev_local knex migrate:latest",
+        "seedDb": "ENVIRONMENT=node_dev knex seed:run",
+        "seedDbLocal": "ENVIRONMENT=node_dev_local knex seed:run"
     },
     "mocha": {
         "mochaExplorer.launcherScript": "node_modules/mocha-explorer-launcher-scripts/vscode-test",
