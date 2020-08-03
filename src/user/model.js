@@ -1,19 +1,12 @@
 'use strict'
 
+const { knex } = require('../db/knex')
+const { Model } = require('../core/model')
+
 const bcrypt = require('bcrypt')
 
-const { knex } = require('../db/knex')
-
-class User {
+class User extends Model {
     static tableName = 'users'
-
-    constructor(values = {}) {
-        Object.assign(this, values)
-    }
-
-    static init(values) {
-        return new this(values)
-    }
 
     static async findById(id) {
         const values =  await knex(this.tableName).where({ id }).first()
@@ -26,12 +19,14 @@ class User {
     }
 
     static async create(values) {
-        let { username, password } = values
+        values = Array.isArray(values) ? values : [values]
 
-        const salt = bcrypt.genSaltSync(10)
-        password = bcrypt.hashSync(password, salt)
+        const insertData = values.map(user => ({
+            username: user.username,
+            password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
+        }))
 
-        return knex(this.tableName).insert({username, password})
+        return knex(this.tableName).insert(insertData)
     }
 
     comparePassword (password) {
