@@ -1,19 +1,12 @@
 'use strict'
 
 const { knex } = require('../db/knex')
+const { Model } = require('../core/model')
 
-class Task {
+class Task extends Model {
     static tableName = 'tasks'
     static labelsTableName = 'task_labels'
     static assigneesTableName = 'task_assignees'
-
-    constructor(values = {}) {
-        Object.assign(this, values)
-    }
-
-    static init(values) {
-        return new this(values)
-    }
 
     static async findById(id) {
         const values =  await knex(this.tableName).where({ id }).first()
@@ -45,20 +38,20 @@ class Task {
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
         const newKey = newKeyResponse.rows.shift().project_generate_next_sequence_val_procedure
 
-        const newTaskData = {
+        const newTaskData = this.underscoreKeys({
             key: newKey,
             title,
             description,
             version,
-            time_estimated: timeEstimated,
-            time_spent: timeSpent,
-            due_at: dueAt,
-            author_id: authorId,
-            project_id: projectId,
-            priority_id: priorityId,
-            type_id: typeId,
-            status_id: statusId,
-        }
+            timeEstimated,
+            timeSpent,
+            dueAt,
+            authorId,
+            projectId,
+            priorityId,
+            typeId,
+            statusId
+        })
 
         try {
             const trxProvider = await knex.transactionProvider()
@@ -81,40 +74,24 @@ class Task {
                     'created_at',
                     'updated_at'
                 ])
-                console.log('tasks')
-                console.log(tasks)
+
+                //TODO handle bulk task create
                 const taskId = tasks[0].id
 
-                const taskLabels = labelIds.map(labelId => ({
-                    task_id: taskId,
-                    label_id: labelId
-                }))
-                const insertedTasksLabels = await  trx(this.labelsTableName).insert(taskLabels, [
-                    'id', 
-                    'task_id', 
-                    'label_id'
-                ])
+                const taskLabels = labelIds.map(labelId => (this.underscoreKeys({taskId, labelId})))
+                const insertedTasksLabels = await  trx(this.labelsTableName).insert(taskLabels, ['label_id'])
 
-                const taskAssignees = assignees.map(assignee => ({
-                    task_id: taskId,
-                    user_id: assignee.userId,
-                    assignee_role_id: assignee.roleId
-                }))
-                const insertedTaskAssignees = await  trx(this.assigneesTableName).insert(taskAssignees, [
-                    'id',
-                    'task_id',
-                    'user_id',
-                    'assignee_role_id'
-                ])
-                console.log('insertedTaskAssignees')
-                console.log(insertedTaskAssignees)
+                const taskAssignees = assignees.map(assignee => (this.underscoreKeys({taskId, ...assignee})))
+                const insertedTaskAssignees = await  trx(this.assigneesTableName).insert(taskAssignees, ['user_id', 'role_id'])
+
                 trx.commit()
-                console.log('tasks')
-                console.log(tasks)
-                return Object.assign({}, 
-                    tasks[0],
-                    {labelIds: insertedTasksLabels.map((label) => label.label_id)},
-                    {assignees: insertedTaskAssignees.map((assignee) => ({userId: assignee.user_id, roleId: assignee.assignee_role_id}) )}
+
+                return this.camelizeKeys(
+                    Object.assign({},
+                        ...tasks,
+                        {labelIds: insertedTasksLabels},
+                        {assignees: insertedTaskAssignees}
+                    )
                 )
             }
             catch (e) {

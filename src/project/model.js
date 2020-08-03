@@ -1,18 +1,11 @@
 'use strict'
 
 const { knex } = require('../db/knex')
+const { Model } = require('../core/model')
 
-class Project {
+class Project extends Model {
     static tableName = 'projects'
     static sequencesTableName = 'project_sequences'
-
-    constructor(values = {}) {
-        Object.assign(this, values)
-    }
-
-    static init(values) {
-        return new this(values)
-    }
 
     static async findById(id) {
         const values =  await knex(this.tableName).where({ id }).first()
