@@ -17,56 +17,70 @@ class Project extends Model {
         return this.init(values)
     }
 
-    // TODO refactor to use knex transactions
     static async create(values) {
         let { key, title, description } = values
         const projectKey = key || title.slice(0, 3).toUpperCase()
-        const sequenceName = `project_${projectKey}`
-        let createdProject = {}
 
-        await knex(this.tableName)
-            .returning(['id', 'key', 'title', 'description'])
-            .insert({key: projectKey, title, description})
-            .then((project) => {
-                createdProject = this.init(project[0])
-                return knex.raw('CREATE SEQUENCE ' + sequenceName)
-            })
-            .then(() => {
-                return knex(this.sequencesTableName).insert({project_key: projectKey, next_value: 1})
-            })
+        const newProjectData = {
+            key: projectKey,
+            title,
+            description
+        }
 
-        return createdProject
+        try {
+            const trxProvider = await knex.transactionProvider()
+            const trx = await trxProvider()
+            try {
+                //TODO implement bulk insert
+                const projects = await trx(this.tableName).insert(newProjectData, [
+                    'id',
+                    'key',
+                    'title',
+                    'description'
+                ])
+
+                await trx.raw(`CREATE SEQUENCE project_${projectKey}`)
+
+                await trx(this.sequencesTableName).insert(this.underscoreKeys({projectKey, nextValue: 1}))
+
+                trx.commit()
+
+                return this.init(this.camelizeKeys(...projects))
+            }
+            catch (e) {
+                trx.rollback()
+                throw e
+            }
+        }
+        catch (e) {
+            throw e
+        }
     }
 
+    //TODO add a way to drop all projects and associated sequences (needed at least for seeder)
     static async delete(key) {
-        return await knex(this.tableName)
-            .where(key)
-            .del()
-            .then(() => {
-                const sequenceName = `project_${key}`
-                return knex.raw(`DROP SEQUENCE ${sequenceName}`)
-            })
-            .then(() => {
-                // const sequenceName = `project_${projectKey}`
-                // return knex.raw(`DROP SEQUENCE ${sequenceName}`)
-                return knex(this.sequencesTableName).where({project_key: key}).del()
-            })
+        try {
+            const trxProvider = await knex.transactionProvider()
+            const trx = await trxProvider()
+            try {
+                //TODO implement bulk delete
+                await trx(this.tableName).where(key).del()
 
-        // await knex(this.tableName)
-        //     .returning(['id', 'key', 'title', 'description'])
-        //     .insert({key: projectKey, title, description})
-        //     .then((project) => {
-        //         createdProject = this.init(project[0])
-        //         return knex.raw('CREATE SEQUENCE ' + sequenceName)
-        //     })
-        //     .then(() => {
-        //         return knex(this.sequencesTableName).insert({project_key: projectKey, next_value: 1})
-        //     })
-        //
-        // return createdProject
+                await trx.raw(`DROP SEQUENCE project_${projectKey}`)
+
+                await trx(this.sequencesTableName).where({project_key: key}).del()
+
+                return trx.commit()
+            }
+            catch (e) {
+                trx.rollback()
+                throw e
+            }
+        }
+        catch (e) {
+            throw e
+        }
     }
 }
-
-// // TODO: add afterDestroy hook and drop all sequences (also in seeder)
 
 module.exports = { Project }

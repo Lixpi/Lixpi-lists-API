@@ -86,11 +86,13 @@ class Task extends Model {
 
                 trx.commit()
 
-                return this.camelizeKeys(
-                    Object.assign({},
-                        ...tasks,
-                        {labelIds: insertedTasksLabels},
-                        {assignees: insertedTaskAssignees}
+                return this.init(
+                    this.camelizeKeys(
+                        Object.assign({},
+                            ...tasks,
+                            {labelIds: insertedTasksLabels},
+                            {assignees: insertedTaskAssignees}
+                        )
                     )
                 )
             }
