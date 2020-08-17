@@ -8,6 +8,7 @@ const LocalStrategy = require('passport-local').Strategy
 
 const indexRoute = require('./routes/index')
 const projectsRoute = require('./routes/projects/projects')
+const projectRoute = require('./routes/projects/project')
 const tasksRoute = require('./routes/tasks/tasks')
 const taskRoute = require('./routes/tasks/task')
 const loginRoute = require('./routes/login')
@@ -45,7 +46,7 @@ const passportConfig = (passport) => {
     (req, username, password, done) => Promise.resolve()
         .then(async () => {
             const user = await User.findByUsername(username)
-            if (!user || !await user.comparePassword(password)) {
+            if (!user || !await User.comparePassword(password)) {
                 return done(null, null)
             }
             return done(null, user)
@@ -73,6 +74,7 @@ app.use(passport.session())
 // Routes ******************************************
 app.get('/', indexRoute.get)
 app.post('/projects', projectsRoute.post)
+app.get('/project/:key', projectRoute.get)
 app.get('/tasks', tasksRoute.get)
 app.post('/tasks', tasksRoute.post)
 app.get('/task/:key', taskRoute.get)
