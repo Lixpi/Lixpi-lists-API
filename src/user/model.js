@@ -1,24 +1,19 @@
 'use strict'
 
-const { knex } = require('../db/knex')
-const { Model } = require('../core/model')
-
 const bcrypt = require('bcrypt')
+const { knex } = require('../db/knex')
+const { canFindById } = require('../core/model')
 
-class User extends Model {
-    static tableName = 'users'
+const config = {
+    tableName: 'users'
+}
 
-    static async findById(id) {
-        const values =  await knex(this.tableName).where({ id }).first()
-        return this.init(values)
-    }
+const Model = (config) => {
+    let state = {}
 
-    static async findByUsername(username) {
-        const values =  await knex(this.tableName).where({ username }).first()
-        return this.init(values)
-    }
+    const findByUsername = async username => state = await knex(config.tableName).where({ username }).first()
 
-    static async create(values) {
+    const create = async values => {
         values = Array.isArray(values) ? values : [values]
 
         const insertData = values.map(user => ({
@@ -26,14 +21,23 @@ class User extends Model {
             password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
         }))
 
-        return knex(this.tableName).insert(insertData)
+        return knex(config.tableName).insert(insertData)
     }
 
-    comparePassword (password) {
+    const comparePassword = password => {
         return Promise.resolve()
-            .then(() => bcrypt.compareSync(password, this.password))
+            .then(() => bcrypt.compareSync(password, state.password))
             .catch(err => err)
     }
+
+    return {
+        ...canFindById(config, state),
+        findByUsername,
+        create,
+        comparePassword
+    }
 }
+
+const User = Model(config)
 
 module.exports = { User }

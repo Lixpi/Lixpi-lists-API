@@ -37,6 +37,7 @@
         "testExplorer.gutterDecoration": true
     },
     "dependencies": {
+        "lixpi-lists-helpers": "file:/Users/aiskandiarov/Lprojects/Lixpi-lists-helpers",
         "bcrypt": "*",
         "bluebird": "*",
         "bookshelf": "*",

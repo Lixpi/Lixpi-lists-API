@@ -1,25 +1,23 @@
 'use strict'
 
 const { knex } = require('../db/knex')
-const { Model } = require('../core/model')
+const { canFindById, canFindByKey } = require('../core/model')
+const { camelizeKeys, underscoreKeys } = require('../helpers/object')
 
-class Project extends Model {
-    static tableName = 'projects'
-    static sequencesTableName = 'project_sequences'
+const config = {
+    tableName: 'projects',
+    sequencesTableName: 'project_sequences',
+}
 
-    static async findById(id) {
-        const values =  await knex(this.tableName).where({ id }).first()
-        return this.init(values)
-    }
+const Model = (config) => {
+    let state = {}
 
-    static async findByKey(key) {
-        const values =  await knex(this.tableName).where({ key }).first()
-        return this.init(values)
-    }
-
-    static async create(values) {
-        let { key, title, description } = values
-        const projectKey = key || title.slice(0, 3).toUpperCase()
+    const create = async ({
+        key,
+        title,
+        description
+    }) => {
+        const projectKey = key || title.slice(0, 3).toUpperCase() // TODO refactor project key generator, move into SQL function
 
         const newProjectData = {
             key: projectKey,
@@ -32,7 +30,7 @@ class Project extends Model {
             const trx = await trxProvider()
             try {
                 //TODO implement bulk insert
-                const projects = await trx(this.tableName).insert(newProjectData, [
+                const projects = await trx(config.tableName).insert(newProjectData, [
                     'id',
                     'key',
                     'title',
@@ -41,11 +39,12 @@ class Project extends Model {
 
                 await trx.raw(`CREATE SEQUENCE project_${projectKey}`)
 
-                await trx(this.sequencesTableName).insert(this.underscoreKeys({projectKey, nextValue: 1}))
+                await trx(config.sequencesTableName).insert(underscoreKeys({projectKey, nextValue: 1}))
 
                 trx.commit()
 
-                return this.init(this.camelizeKeys(...projects))
+                // return Object.assign(state, camelizeKeys(...projects))
+                return state = camelizeKeys(...projects)
             }
             catch (e) {
                 trx.rollback()
@@ -58,7 +57,7 @@ class Project extends Model {
     }
 
     //TODO add a way to drop all projects and associated sequences (needed at least for seeder)
-    static async delete(key) {
+    const drop = async key => {
         try {
             const trxProvider = await knex.transactionProvider()
             const trx = await trxProvider()
@@ -81,6 +80,15 @@ class Project extends Model {
             throw e
         }
     }
+
+    return {
+        ...canFindById(config, state),
+        ...canFindByKey(config, state),
+        create,
+        drop
+    }
 }
+
+const Project = Model(config)
 
 module.exports = { Project }

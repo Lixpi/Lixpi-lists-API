@@ -1,44 +1,37 @@
 'use strict'
 
 const { knex } = require('../db/knex')
-const { Model } = require('../core/model')
+const { canFindById, canFindByKey } = require('../core/model')
+const { camelizeKeys, underscoreKeys } = require('../helpers/object')
 
-class Task extends Model {
-    static tableName = 'tasks'
-    static labelsTableName = 'task_labels'
-    static assigneesTableName = 'task_assignees'
+const config = {
+    tableName: 'tasks',
+    labelsTableName: 'task_labels',
+    assigneesTableName: 'task_assignees'
+}
 
-    static async findById(id) {
-        const values =  await knex(this.tableName).where({ id }).first()
-        return this.init(values)
-    }
+const Model = (config) => {
+    let state = {}
 
-    static async findByKey(key) {
-        const values =  await knex(this.tableName).where({ key }).first()
-        return this.init(values)
-    }
-
-    static async create(values) {
-        const {
-            projectId,
-            title,
-            description,
-            version,
-            timeEstimated,
-            timeSpent,
-            dueAt,
-            authorId,
-            typeId,
-            statusId,
-            priorityId,
-            labelIds,
-            assignees
-        } = values
-
+    const create = async ({
+        projectId,
+        title,
+        description,
+        version,
+        timeEstimated,
+        timeSpent,
+        dueAt,
+        authorId,
+        typeId,
+        statusId,
+        priorityId,
+        labelIds,
+        assignees
+    }) => {
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
         const newKey = newKeyResponse.rows.shift().project_generate_next_sequence_val_procedure
 
-        const newTaskData = this.underscoreKeys({
+        const newTaskData = underscoreKeys({
             key: newKey,
             title,
             description,
@@ -57,7 +50,7 @@ class Task extends Model {
             const trxProvider = await knex.transactionProvider()
             const trx = await trxProvider()
             try {
-                const tasks = await trx(this.tableName).insert(newTaskData, [
+                const tasks = await trx(config.tableName).insert(newTaskData, [
                     'id',
                     'key',
                     'title',
@@ -78,23 +71,19 @@ class Task extends Model {
                 //TODO handle bulk task create
                 const taskId = tasks[0].id
 
-                const taskLabels = labelIds.map(labelId => (this.underscoreKeys({taskId, labelId})))
-                const insertedTasksLabels = await  trx(this.labelsTableName).insert(taskLabels, ['label_id'])
+                const taskLabels = labelIds.map(labelId => (underscoreKeys({taskId, labelId})))
+                const insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
 
-                const taskAssignees = assignees.map(assignee => (this.underscoreKeys({taskId, ...assignee})))
-                const insertedTaskAssignees = await  trx(this.assigneesTableName).insert(taskAssignees, ['user_id', 'role_id'])
+                const taskAssignees = assignees.map(assignee => (underscoreKeys({taskId, ...assignee})))
+                const insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'role_id'])
 
                 trx.commit()
 
-                return this.init(
-                    this.camelizeKeys(
-                        Object.assign({},
-                            ...tasks,
-                            {labelIds: insertedTasksLabels},
-                            {assignees: insertedTaskAssignees}
-                        )
-                    )
-                )
+                return state = camelizeKeys({
+                    ...tasks,
+                    labelIds: insertedTasksLabels,
+                    assignees: insertedTaskAssignees
+                })
             }
             catch (e) {
                 trx.rollback()
@@ -105,6 +94,14 @@ class Task extends Model {
             throw e
         }
     }
+
+    return {
+        ...canFindById(config, state),
+        ...canFindByKey(config, state),
+        create
+    }
 }
+
+const Task = Model(config)
 
 module.exports = { Task }
