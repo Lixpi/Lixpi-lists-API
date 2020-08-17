@@ -6,7 +6,7 @@ const { camelizeKeys, underscoreKeys } = require('../helpers/object')
 
 const config = {
     tableName: 'projects',
-    sequencesTableName: 'project_sequences',
+    sequencesTableName: 'project_sequences'
 }
 
 const Model = (config) => {

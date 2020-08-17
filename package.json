@@ -37,7 +37,6 @@
         "testExplorer.gutterDecoration": true
     },
     "dependencies": {
-        "lixpi-lists-helpers": "file:/Users/aiskandiarov/Lprojects/Lixpi-lists-helpers",
         "bcrypt": "*",
         "bluebird": "*",
         "bookshelf": "*",
@@ -49,6 +48,7 @@
         "express-session": "*",
         "fsevents": "*",
         "knex": "*",
+        "lixpi-lists-helpers": "0.0.1",
         "lodash": "*",
         "npm": "*",
         "passport": "*",
