@@ -10,7 +10,7 @@ module.exports.post = async (req, res) => {
         title: req.body.title,
         description: req.body.description
     }
-    const project = await Project.create(newProjectData).then(project => {
+    await Project.create(newProjectData).then(project => {
         res.status(200).json(project)
     })
 }

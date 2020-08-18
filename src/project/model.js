@@ -25,58 +25,48 @@ const Model = (config) => {
             description
         }
 
+        const trxProvider = await knex.transactionProvider()
+        const trx = await trxProvider()
         try {
-            const trxProvider = await knex.transactionProvider()
-            const trx = await trxProvider()
-            try {
-                //TODO implement bulk insert
-                const projects = await trx(config.tableName).insert(newProjectData, [
-                    'id',
-                    'key',
-                    'title',
-                    'description'
-                ])
+            //TODO implement bulk insert
+            const projects = await trx(config.tableName).insert(newProjectData, [
+                'id',
+                'key',
+                'title',
+                'description'
+            ])
 
-                await trx.raw(`CREATE SEQUENCE project_${projectKey}`)
+            await trx.raw(`CREATE SEQUENCE project_${projectKey}`)
 
-                await trx(config.sequencesTableName).insert(underscoreKeys({projectKey, nextValue: 1}))
+            await trx(config.sequencesTableName).insert(underscoreKeys({projectKey, nextValue: 1}))
 
-                trx.commit()
+            trx.commit()
 
-                // return Object.assign(state, camelizeKeys(...projects))
-                return state = camelizeKeys(...projects)
-            }
-            catch (e) {
-                trx.rollback()
-                throw e
-            }
+            // return Object.assign(state, camelizeKeys(...projects))
+            return state = camelizeKeys(...projects)
         }
         catch (e) {
+            trx.rollback()
             throw e
         }
     }
 
     //TODO add a way to drop all projects and associated sequences (needed at least for seeder)
     const drop = async key => {
+        const trxProvider = await knex.transactionProvider()
+        const trx = await trxProvider()
         try {
-            const trxProvider = await knex.transactionProvider()
-            const trx = await trxProvider()
-            try {
-                //TODO implement bulk delete
-                await trx(this.tableName).where(key).del()
+            //TODO implement bulk delete
+            await trx(this.tableName).where(key).del()
 
-                await trx.raw(`DROP SEQUENCE project_${projectKey}`)
+            await trx.raw(`DROP SEQUENCE project_${key}`)
 
-                await trx(this.sequencesTableName).where({project_key: key}).del()
+            await trx(this.sequencesTableName).where({project_key: key}).del()
 
-                return trx.commit()
-            }
-            catch (e) {
-                trx.rollback()
-                throw e
-            }
+            return trx.commit()
         }
         catch (e) {
+            trx.rollback()
             throw e
         }
     }
