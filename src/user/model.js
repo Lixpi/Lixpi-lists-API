@@ -31,6 +31,7 @@ const Model = (config) => {
     }
 
     return {
+        ...state,
         ...canFindById(config, state),
         findByUsername,
         create,

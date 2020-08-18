@@ -98,11 +98,14 @@ const Model = (config) => {
 
             trx.commit()
 
-            return state = camelizeKeys({
-                ...tasks,
-                labelIds: insertedTasksLabels,
-                assignees: insertedTaskAssignees
-            })
+            return Object.assign(
+                state,
+                camelizeKeys({
+                    ...tasks[0],
+                    labelIds: insertedTasksLabels,
+                    assignees: insertedTaskAssignees
+                })
+            )
         }
         catch (e) {
             trx.rollback()
@@ -111,6 +114,7 @@ const Model = (config) => {
     }
 
     return {
+        ...state,
         findByKey,
         create
     }
