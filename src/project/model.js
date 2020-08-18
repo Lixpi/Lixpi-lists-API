@@ -42,8 +42,10 @@ const Model = (config) => {
 
             trx.commit()
 
-            // return Object.assign(state, camelizeKeys(...projects))
-            return state = camelizeKeys(...projects)
+            return Object.assign(
+                state,
+                camelizeKeys(...projects)
+            )
         }
         catch (e) {
             trx.rollback()
@@ -72,6 +74,7 @@ const Model = (config) => {
     }
 
     return {
+        ...state,
         ...canFindById(config, state),
         ...canFindByKey(config, state),
         create,

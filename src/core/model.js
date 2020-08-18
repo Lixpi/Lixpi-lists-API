@@ -3,10 +3,18 @@
 const { knex } = require('../db/knex')
 
 module.exports = {
-    canFindById: (config, state) => ({
-        findById: async id => state = await knex(config.tableName).where({ id }).first()
+    canFindById: (config, state = {}) => ({
+        ...state,
+        findById: async id => Object.assign(
+            state,
+            await knex(config.tableName).where({ id }).first()
+        )
     }),
-    canFindByKey: (config, state) => ({
-        findByKey: async key => state = await knex(config.tableName).where({ key }).first()
+    canFindByKey: (config, state = {}) => ({
+        ...state,
+        findByKey: async key => Object.assign(
+            state,
+            await knex(config.tableName).where({ key }).first()
+        )
     })
 }
