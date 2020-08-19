@@ -1,5 +1,7 @@
 'use strict'
 
+const { _ } = require('lodash')
+
 const { knex } = require('../db/knex')
 const { camelizeKeys, underscoreKeys } = require('../helpers/object')
 
@@ -13,24 +15,88 @@ const Model = (config) => {
     let state = {}
 
     const findByKey = async key => {
-        // return await knex.select(
-        //     'tasks.key as tk',
-        //     'users.username'
-        // )
-        //     .from(config.tableName)
-        //     .where({ 'tasks.key': key })
-        //     .leftJoin('users', {'tasks.author_id': 'users.id'})
-        //     .leftJoin('projects', {'tasks.project_id': 'projects.id'})
-        //     .leftJoin('priorities', {'tasks.priority_id': 'priorities.id'})
-        //     .leftJoin('types', {'tasks.type_id': 'types.id'})
-        //     .leftJoin('statuses', {'tasks.status_id': 'statuses.id'})
+        const task = await knex.select(
+            'tasks.id as id',
+            'tasks.title as title',
+            'tasks.description as description',
+            'tasks.version as version',
+            'tasks.time_estimated as timeEstimated',
+            'tasks.time_spent as timeSpent',
+            'tasks.due_at as dueAt',
+            'projects.id as projectId',
+            'projects.key as projectKey',
+            'projects.title as projectTitle',
+            'users.id as authorId',
+            'users.username as authorUsername',
+            'priorities.id as priorityId',
+            'priorities.title as priorityTitle',
+            'types.id as typeId',
+            'types.title as typeTitle',
+            'statuses.id as statusId',
+            'statuses.title as statusTitle',
+        )
+            .from(config.tableName)
+            .where({'tasks.key': key})
+            .leftJoin('projects', {'tasks.project_id': 'projects.id'})
+            .leftJoin('users', {'tasks.author_id': 'users.id'})
+            .leftJoin('priorities', {'tasks.priority_id': 'priorities.id'})
+            .leftJoin('types', {'tasks.type_id': 'types.id'})
+            .leftJoin('statuses', {'tasks.status_id': 'statuses.id'})
+            .first()
 
-        return await knex.select(
-            '*'
+        const labels = await knex.select(
+            'labels.id',
+            'labels.color',
+            'labels.title'
         )
             .from('task_labels')
-            .where({ 'task_labels.task_id': 1 })
+            .where({ 'task_labels.task_id': task.id })
             .leftJoin('labels', {'task_labels.label_id': 'labels.id'})
+
+        const assignees = await knex.select(
+            'users.id as userId',
+            'users.username as username',
+            'assignee_roles.id as assigneeRoleId',
+            'assignee_roles.title as assigneeRoleTitle'
+        )
+            .from('task_assignees')
+            .where({ 'task_assignees.task_id': task.id })
+            .leftJoin('users', {'task_assignees.user_id': 'users.id'})
+            .leftJoin('assignee_roles', {'task_assignees.assignee_role_id': 'assignee_roles.id'})
+        
+
+        return {
+            ..._.omit(task, [
+                'projectId', 'projectKey', 'projectTitle',
+                'authorId', 'authorUsername',
+                'priorityId', 'priorityTitle',
+                'typeId', 'typeTitle',
+                'statusId', 'statusTitle'
+            ]),
+            project: {
+                id: task.projectId,
+                key: task.projectKey,
+                title: task.projectTitle
+            },
+            author: {
+                id: task.authorId,
+                username: task.authorUsername
+            },
+            priority: {
+                id: task.priorityId,
+                title: task.priorityTitle
+            },
+            type: {
+                id: task.typeId,
+                title: task.typeTitle
+            },
+            status: {
+                id: task.statusId,
+                title: task.statusTitle
+            },
+            labels,
+            assignees
+        }
     }
 
     const create = async ({
