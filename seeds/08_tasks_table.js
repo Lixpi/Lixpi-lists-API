@@ -19,7 +19,7 @@ exports.seed = function(knex) {
         		statusId: 1,
                 labelIds: [1, 2],
                 assignees: [
-                    {userId: 1, roleId: 1}
+                    {userId: 1, assigneeRoleId: 1}
                 ]
             })
         })

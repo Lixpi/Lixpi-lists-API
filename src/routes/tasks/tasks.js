@@ -3,13 +3,13 @@
 const authMiddleware = require('../../middleware/auth')
 const { Task } = require('../../task/model')
 
-module.exports.get = async (req, res) => {
+const get = async (req, res) => {
     authMiddleware(req, res)
-    // const tasks = await getTasks()
-    // res.status(200).json(tasks)
+    const tasks = await Task.all()
+    res.status(200).json(tasks)
 }
 
-module.exports.post = async (req, res) => {
+const post = async (req, res) => {
     authMiddleware(req, res)
     const newTaskData = {
         projectId: req.body.projectId,
@@ -28,4 +28,9 @@ module.exports.post = async (req, res) => {
     }
     const task = await Task.create(newTaskData)
     res.status(200).json(task)
+}
+
+module.exports = {
+    get,
+    post
 }
