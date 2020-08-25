@@ -16,7 +16,7 @@ module.exports.post = async (req, res, next) => {
             return res.status(401).json({
                 error: {
                     code: 401,
-                    message
+                    message: String(message)
                 }
             })
         })
