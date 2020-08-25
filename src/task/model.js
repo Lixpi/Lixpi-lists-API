@@ -17,6 +17,7 @@ const Model = (config) => {
     const findByKey = async key => {
         const task = await knex.select(
             'tasks.id as id',
+            'tasks.key as key',
             'tasks.title as title',
             'tasks.description as description',
             'tasks.version as version',
@@ -102,6 +103,7 @@ const Model = (config) => {
     const all = async () => {
         const tasks = await knex.select(
             'tasks.id as id',
+            'tasks.key as key',
             'tasks.title as title',
             'tasks.description as description',
             'tasks.version as version',
