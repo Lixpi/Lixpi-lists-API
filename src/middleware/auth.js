@@ -73,7 +73,7 @@ module.exports.authenticateWithSession = async (req, res, next) => {
     const user = await authenticate(req, res, next)
 
     if (!user) {
-        return 'Invalid credentials.'
+        return Promise.reject(new Error('Invalid credentials.'))
     }
 
     await login(req, user)
