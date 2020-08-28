@@ -17,8 +17,8 @@ const post = async (req, res) => {
 const get = async (req, res) => {
     authMiddleware(req, res)
 
-    // const projects = await Project.all()
-    // res.status(200).json(projects)
+    const projects = await Project.all()
+    res.status(200).json(projects)
 }
 
 module.exports = {

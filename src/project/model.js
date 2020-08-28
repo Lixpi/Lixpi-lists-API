@@ -1,7 +1,7 @@
 'use strict'
 
 const { knex } = require('../db/knex')
-const { canFindById, canFindByKey } = require('../core/model')
+const { canFindById, canFindByKey, canGetAll } = require('../core/model')
 const { camelizeKeys, underscoreKeys } = require('../helpers/object')
 
 const config = {
@@ -74,6 +74,7 @@ const Model = (config) => {
         ...state,
         ...canFindById(config, state),
         ...canFindByKey(config, state),
+        ...canGetAll(config, state),
         create,
         del
     }
