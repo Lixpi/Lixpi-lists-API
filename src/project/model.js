@@ -53,18 +53,15 @@ const Model = (config) => {
         }
     }
 
-    //TODO add a way to drop all projects and associated sequences (needed at least for seeder)
-    const drop = async key => {
+    //TODO add a way to del all projects and associated sequences (needed at least for seeder)
+    const del = async key => {
         const trxProvider = await knex.transactionProvider()
         const trx = await trxProvider()
         try {
             //TODO implement bulk delete
-            await trx(this.tableName).where(key).del()
-
+            await trx(config.tableName).where({key}).del()
             await trx.raw(`DROP SEQUENCE project_${key}`)
-
-            await trx(this.sequencesTableName).where({project_key: key}).del()
-
+            await trx(config.sequencesTableName).where({project_key: key}).del()
             return trx.commit()
         }
         catch (e) {
@@ -78,7 +75,7 @@ const Model = (config) => {
         ...canFindById(config, state),
         ...canFindByKey(config, state),
         create,
-        drop
+        del
     }
 }
 
