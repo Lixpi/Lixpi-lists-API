@@ -16,5 +16,12 @@ module.exports = {
             state,
             await knex(config.tableName).where({ key }).first()
         )
+    }),
+    canGetAll: (config, state = {}) => ({
+        ...state,
+        all: async () => Object.assign(
+            state,
+            await knex(config.tableName)
+        )
     })
 }

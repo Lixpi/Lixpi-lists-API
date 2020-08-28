@@ -73,6 +73,7 @@ app.use(passport.session())
 
 // Routes ******************************************
 app.get('/', indexRoute.get)
+app.get('/projects', projectsRoute.get)
 app.post('/projects', projectsRoute.post)
 app.get('/project/:key', projectRoute.get)
 app.get('/tasks', tasksRoute.get)
