@@ -72,9 +72,9 @@ const Model = (config) => {
 
     return {
         ...state,
-        ...canFindById(config, state),
-        ...canFindByKey(config, state),
-        ...canGetAll(config, state),
+        ...canFindById(config),
+        ...canFindByKey(config),
+        ...canGetAll(config),
         create,
         del
     }
