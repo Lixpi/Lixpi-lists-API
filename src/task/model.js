@@ -4,6 +4,7 @@ const { _ } = require('lodash')
 
 const { knex } = require('../db/knex')
 const { camelizeKeys, underscoreKeys } = require('../helpers/object')
+const { canDel } = require('../core/model')
 
 const config = {
     tableName: 'tasks',
@@ -271,7 +272,8 @@ const Model = (config) => {
         ...state,
         findByKey,
         all,
-        create
+        create,
+        ...canDel(config)
     }
 }
 

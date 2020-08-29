@@ -12,11 +12,11 @@ exports.seed = function(knex) {
                 timeEstimated: 124234,
                 timeSpent: 124234,
                 dueAt: '2030-11-11 00:00:00',
-        		projectId: 1,
+                projectId: 1,
                 authorId: 1,
-        		priorityId: 1,
-        		typeId: 1,
-        		statusId: 1,
+                priorityId: 1,
+                typeId: 1,
+                statusId: 1,
                 labelIds: [1, 2],
                 assignees: [
                     {userId: 1, assigneeRoleId: 1}
