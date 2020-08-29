@@ -28,7 +28,33 @@ describe('Save', () => {
     })
 })
 
-describe('Get', () => {
+describe('Get single project', () => {
+    beforeEach( async () => {
+        const projectData1 = {
+            title: 'Romeo',
+            description: 'Romeo project'
+        }
+        await Project.create(projectData1)
+    })
+
+    afterEach( async () => {
+        await Project.del('ROM')
+    })
+
+    it('shoud get project', async () => {
+        const expected = {
+            key: 'ROM',
+            title: 'Romeo',
+            description: 'Romeo project'
+        }
+
+        const actual = await Project.findByKey('ROM')
+
+        expect(expected).to.deep.equal(_.omit(actual, ['id']))
+    })
+})
+
+describe('Get all projects', () => {
     beforeEach( async () => {
         const projectData1 = {
             title: 'Romeo',
@@ -47,29 +73,17 @@ describe('Get', () => {
         await Project.del('JUL')
     })
 
-    it('shoud get project', async () => {
-        const expected = {
-            key: 'ROM',
-            title: 'Romeo',
-            description: 'Romeo project'
-        }
-
-        const actual = await Project.findByKey('ROM')
-
-        expect(expected).to.deep.equal(_.omit(actual, ['id']))
-    })
-
     it('shoud get all projects', async () => {
         const expected =[
-            {
-                key: 'ROM',
-                title: 'Romeo',
-                description: 'Romeo project'
-            },
             {
                 key: 'JUL',
                 title: 'Juliet',
                 description: 'Juliet project'
+            },
+            {
+                key: 'ROM',
+                title: 'Romeo',
+                description: 'Romeo project'
             }
         ]
 
