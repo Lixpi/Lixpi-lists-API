@@ -4,7 +4,6 @@
     "description": "Lists API",
     "main": "server.js",
     "scripts": {
-        "resetTestDbLocal": "PGPASSWORD=example dropdb -h localhost -p 5432 -U postgres lists_test; PGPASSWORD=example createdb -h localhost -p 5432 -U postgres lists_test; ENVIRONMENT=node_test_local knex migrate:latest; ENVIRONMENT=node_test_local knex seed:run",
         "test": "ENVIRONMENT=node_test node_modules/mocha/bin/_mocha --exit ./src/**/*.test.js",
         "testLocal": "ENVIRONMENT=node_test_local node_modules/mocha/bin/_mocha --exit ./src/**/*.test.js",
         "dev": "ENVIRONMENT=node_dev nodemon ./src/server.js",
@@ -20,7 +19,11 @@
         "migrations": "ENVIRONMENT=node_dev knex migrate:latest",
         "migrationsLocal": "ENVIRONMENT=node_dev_local knex migrate:latest",
         "seedDb": "ENVIRONMENT=node_dev knex seed:run",
-        "seedDbLocal": "ENVIRONMENT=node_dev_local knex seed:run"
+        "seedDbLocal": "ENVIRONMENT=node_dev_local knex seed:run",
+        "createDbTest": "PGPASSWORD=example createdb -h localhost -p 5432 -U postgres lists_test",
+        "dropDbTest": "PGPASSWORD=example dropdb -h localhost -p 5432 -U postgres lists_test",
+        "migrationsTestLocal": "ENVIRONMENT=node_test_local knex migrate:latest",
+        "resetTestDbLocal": "npm run dropDbTest; npm run createDbTest; npm run migrationsTestLocal"
     },
     "mocha": {
         "mochaExplorer.launcherScript": "node_modules/mocha-explorer-launcher-scripts/vscode-test",
