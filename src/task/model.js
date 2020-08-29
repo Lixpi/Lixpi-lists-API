@@ -66,39 +66,7 @@ const Model = (config) => {
             .leftJoin('users', {'task_assignees.user_id': 'users.id'})
             .leftJoin('assignee_roles', {'task_assignees.assignee_role_id': 'assignee_roles.id'})
 
-
-        return {
-            ..._.omit(task, [
-                'projectId', 'projectKey', 'projectTitle',
-                'authorId', 'authorUsername',
-                'priorityId', 'priorityTitle',
-                'typeId', 'typeTitle',
-                'statusId', 'statusTitle'
-            ]),
-            project: {
-                id: task.projectId,
-                key: task.projectKey,
-                title: task.projectTitle
-            },
-            author: {
-                id: task.authorId,
-                username: task.authorUsername
-            },
-            priority: {
-                id: task.priorityId,
-                title: task.priorityTitle
-            },
-            type: {
-                id: task.typeId,
-                title: task.typeTitle
-            },
-            status: {
-                id: task.statusId,
-                title: task.statusTitle
-            },
-            labels,
-            assignees
-        }
+        return formatTask(task, labels, assignees)
     }
 
     const all = async () => {
@@ -152,56 +120,79 @@ const Model = (config) => {
                     .leftJoin('users', {'task_assignees.user_id': 'users.id'})
                     .leftJoin('assignee_roles', {'task_assignees.assignee_role_id': 'assignee_roles.id'})
 
-                return {
-                    ..._.omit(task, [
-                        'projectId', 'projectKey', 'projectTitle',
-                        'authorId', 'authorUsername',
-                        'priorityId', 'priorityTitle',
-                        'typeId', 'typeTitle',
-                        'statusId', 'statusTitle'
-                    ]),
-                    project: {
-                        id: task.projectId,
-                        key: task.projectKey,
-                        title: task.projectTitle
-                    },
-                    author: {
-                        id: task.authorId,
-                        username: task.authorUsername
-                    },
-                    priority: {
-                        id: task.priorityId,
-                        title: task.priorityTitle
-                    },
-                    type: {
-                        id: task.typeId,
-                        title: task.typeTitle
-                    },
-                    status: {
-                        id: task.statusId,
-                        title: task.statusTitle
-                    },
-                    labels,
-                    assignees
-                }
+                return formatTask(task, labels, assignees)
             })
         )
+    }
+
+    const formatTask = async (task, labels, assignees) => {
+        let taskFormatted = {
+            id: task.id,
+            key: task.key,
+            title: task.title,
+            project: {
+                id: task.projectId,
+                key: task.projectKey,
+                title: task.projectTitle
+            },
+            author: {
+                id: task.authorId,
+                username: task.authorUsername
+            },
+            priority: {
+                id: task.priorityId,
+                title: task.priorityTitle
+            },
+            status: {
+                id: task.statusId,
+                title: task.statusTitle
+            }
+        }
+
+        if (task.description !== null) {
+            taskFormatted.description = task.description
+        }
+        if (task.version !== null) {
+            taskFormatted.version = task.version
+        }
+        if (task.timeEstimated !== null) {
+            taskFormatted.timeEstimated = task.timeEstimated
+        }
+        if (task.timeSpent !== null) {
+            taskFormatted.timeSpent = task.timeSpent
+        }
+        if (task.dueAt !== null) {
+            taskFormatted.dueAt = task.dueAt
+        }
+        if (task.typeId !== null) {
+            taskFormatted.type = {
+                id: task.typeId,
+                title: task.typeTitle
+            }
+        }
+        if (labels.length != 0) {
+            taskFormatted.labels = labels
+        }
+        if (assignees.length != 0) {
+            taskFormatted.assignees = assignees
+        }
+        return taskFormatted
     }
 
     const create = async ({
         projectId,
         title,
-        description,
-        version,
-        timeEstimated,
-        timeSpent,
-        dueAt,
+        description=null,
+        version=null,
+        timeEstimated=null,
+        timeSpent=null,
+        dueAt=null,
         authorId,
-        typeId,
-        statusId,
-        priorityId,
-        labelIds,
-        assignees
+        typeId=null,
+        statusId=null,
+        priorityId=null,
+        labelIds=null,
+        assignees=null
     }) => {
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
         const newKey = newKeyResponse.rows.shift().project_generate_next_sequence_val_procedure
@@ -245,11 +236,17 @@ const Model = (config) => {
             //TODO handle bulk task create
             const taskId = tasks[0].id
 
-            const taskLabels = labelIds.map(labelId => (underscoreKeys({taskId, labelId})))
-            const insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
+            let insertedTasksLabels = null
+            if (labelIds !== null) {
+                const taskLabels = labelIds.map(labelId => (underscoreKeys({taskId, labelId})))
+                insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
+            }
 
-            const taskAssignees = assignees.map(assignee => (underscoreKeys({taskId, ...assignee})))
-            const insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
+            let insertedTaskAssignees = null
+            if (labelIds !== null) {
+                const taskAssignees = assignees.map(assignee => (underscoreKeys({taskId, ...assignee})))
+                insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
+            }
 
             trx.commit()
 
