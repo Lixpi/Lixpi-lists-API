@@ -10,9 +10,9 @@ module.exports = {
         findByKey: async key => await knex(config.tableName).where({key}).first()
     }),
     canGetAll: config => ({
-        all: async () => await knex(config.tableName).orderBy('key')
+        getAll: async () => await knex(config.tableName).orderBy('key')
     }),
-    canDel: config => ({
-        del: async id => await knex(config.tableName).where({id}).del()
+    canDelete: config => ({
+        delete: async id => await knex(config.tableName).where({id}).del()
     }),
 }

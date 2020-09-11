@@ -11,7 +11,7 @@ const get = async (req, res) => {
 
 const del = async (req, res) => {
     authMiddleware(req, res)
-    await Task.del(req.params.id)
+    await Task.delete(req.params.id)
     res.status(200).json(
         'Task is deleted.'
     )
