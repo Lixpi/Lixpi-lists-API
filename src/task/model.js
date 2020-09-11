@@ -4,7 +4,7 @@ const { _ } = require('lodash')
 
 const { knex } = require('../db/knex')
 const { camelizeKeys, underscoreKeys } = require('../helpers/object')
-const { canDel } = require('../core/model')
+const { canDelete } = require('../core/model')
 
 const config = {
     tableName: 'tasks',
@@ -69,7 +69,7 @@ const Model = (config) => {
         return formatTask(task, labels, assignees)
     }
 
-    const all = async () => {
+    const getAll = async () => {
         const tasks = await knex.select(
             'tasks.id as id',
             'tasks.key as key',
@@ -149,31 +149,31 @@ const Model = (config) => {
             }
         }
 
-        if (task.description !== null) {
+        if (task.description) {
             taskFormatted.description = task.description
         }
-        if (task.version !== null) {
+        if (task.version) {
             taskFormatted.version = task.version
         }
-        if (task.timeEstimated !== null) {
+        if (task.timeEstimated) {
             taskFormatted.timeEstimated = task.timeEstimated
         }
-        if (task.timeSpent !== null) {
+        if (task.timeSpent) {
             taskFormatted.timeSpent = task.timeSpent
         }
-        if (task.dueAt !== null) {
+        if (task.dueAt) {
             taskFormatted.dueAt = task.dueAt
         }
-        if (task.typeId !== null) {
+        if (task.typeId) {
             taskFormatted.type = {
                 id: task.typeId,
                 title: task.typeTitle
             }
         }
-        if (labels.length != 0) {
+        if (labels.length) {
             taskFormatted.labels = labels
         }
-        if (assignees.length != 0) {
+        if (assignees.length) {
             taskFormatted.assignees = assignees
         }
         return taskFormatted
@@ -182,17 +182,17 @@ const Model = (config) => {
     const create = async ({
         projectId,
         title,
-        description=null,
-        version=null,
-        timeEstimated=null,
-        timeSpent=null,
-        dueAt=null,
+        description = null,
+        version = null,
+        timeEstimated = null,
+        timeSpent = null,
+        dueAt = null,
         authorId,
-        typeId=null,
-        statusId=null,
-        priorityId=null,
-        labelIds=null,
-        assignees=null
+        typeId = null,
+        statusId = null,
+        priorityId = null,
+        labelIds = null,
+        assignees = null
     }) => {
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
         const newKey = newKeyResponse.rows.shift().project_generate_next_sequence_val_procedure
@@ -237,13 +237,13 @@ const Model = (config) => {
             const taskId = tasks[0].id
 
             let insertedTasksLabels = null
-            if (labelIds !== null) {
+            if (labelIds) {
                 const taskLabels = labelIds.map(labelId => (underscoreKeys({taskId, labelId})))
                 insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
             }
 
             let insertedTaskAssignees = null
-            if (labelIds !== null) {
+            if (labelIds) {
                 const taskAssignees = assignees.map(assignee => (underscoreKeys({taskId, ...assignee})))
                 insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
             }
@@ -268,9 +268,9 @@ const Model = (config) => {
     return {
         ...state,
         findByKey,
-        all,
+        getAll,
         create,
-        ...canDel(config)
+        ...canDelete(config)
     }
 }
 

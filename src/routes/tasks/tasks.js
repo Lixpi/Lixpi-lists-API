@@ -5,7 +5,7 @@ const { Task } = require('../../task/model')
 
 const get = async (req, res) => {
     authMiddleware(req, res)
-    const tasks = await Task.all()
+    const tasks = await Task.getAll()
     res.status(200).json(tasks)
 }
 
