@@ -32,7 +32,7 @@ const Model = (config) => {
 
     return {
         ...state,
-        ...canFindById(config, state),
+        ...canFindById(config),
         findByUsername,
         create,
         comparePassword

@@ -9,8 +9,13 @@ const LocalStrategy = require('passport-local').Strategy
 const indexRoute = require('./routes/index')
 const projectsRoute = require('./routes/projects/projects')
 const projectRoute = require('./routes/projects/project')
+
 const tasksRoute = require('./routes/tasks/tasks')
 const taskRoute = require('./routes/tasks/task')
+
+const typesRoute = require('./routes/types/types')
+const typeRoute = require('./routes/types/type')
+
 const loginRoute = require('./routes/login')
 const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
@@ -73,16 +78,26 @@ app.use(passport.session())
 
 // Routes ******************************************
 app.get('/', indexRoute.get)
+
 app.get('/projects', projectsRoute.get)
 app.post('/projects', projectsRoute.post)
 app.get('/project/:key', projectRoute.get)
+
 app.get('/tasks', tasksRoute.get)
 app.post('/tasks', tasksRoute.post)
 app.get('/task/:key', taskRoute.get)
 app.delete('/task/:id', taskRoute.del)
+
+app.get('/types', typesRoute.get)
+app.post('/types', typesRoute.post)
+app.get('/type/:id', typeRoute.get)
+app.delete('/type/:id', typeRoute.del)
+
 app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)
+
 app.get('/testauth', testAuthRoute.get)
+
 app.post('/register', registerRoute.post)
 
 app.listen(3000, '0.0.0.0', () => {
