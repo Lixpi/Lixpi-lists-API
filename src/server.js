@@ -19,6 +19,9 @@ const typeRoute = require('./routes/types/type')
 const statusesRoute = require('./routes/statuses/statuses')
 const statusRoute = require('./routes/statuses/status')
 
+const prioritiesRoute = require('./routes/priorities/priorities')
+const priorityRoute = require('./routes/priorities/priority')
+
 const loginRoute = require('./routes/login')
 const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
@@ -100,6 +103,11 @@ app.get('/statuses', statusesRoute.get)
 app.post('/statuses', statusesRoute.post)
 app.get('/status/:id', statusRoute.get)
 app.delete('/status/:id', statusRoute.del)
+
+app.get('/priorities', prioritiesRoute.get)
+app.post('/priorities', prioritiesRoute.post)
+app.get('/priority/:id', priorityRoute.get)
+app.delete('/priority/:id', priorityRoute.del)
 
 app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)

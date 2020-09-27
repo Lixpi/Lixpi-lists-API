@@ -5,8 +5,8 @@ exports.seed = function(knex) {
         .then(function () {
             return knex('statuses').insert([
                 {id: 1, title: 'new'},
-                {id: 2, title: 'closed'},
-                {id: 3, title: 'in progress'}
+                {id: 2, title: 'in progress'},
+                {id: 3, title: 'closed'}
             ])
         })
 }
