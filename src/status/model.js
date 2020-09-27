@@ -4,7 +4,7 @@ const { knex } = require('../db/knex')
 const { canFindById, canGetAll } = require('../core/model')
 
 const config = {
-    tableName: 'types'
+    tableName: 'statuses'
 }
 
 const Model = (config) => {
@@ -31,6 +31,6 @@ const Model = (config) => {
     }
 }
 
-const Type = Model(config)
+const Status = Model(config)
 
-module.exports = { Type }
+module.exports = { Status }
