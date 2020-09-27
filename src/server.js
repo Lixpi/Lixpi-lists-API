@@ -16,6 +16,9 @@ const taskRoute = require('./routes/tasks/task')
 const typesRoute = require('./routes/types/types')
 const typeRoute = require('./routes/types/type')
 
+const statusesRoute = require('./routes/statuses/statuses')
+const statusRoute = require('./routes/statuses/status')
+
 const loginRoute = require('./routes/login')
 const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
@@ -92,6 +95,11 @@ app.get('/types', typesRoute.get)
 app.post('/types', typesRoute.post)
 app.get('/type/:id', typeRoute.get)
 app.delete('/type/:id', typeRoute.del)
+
+app.get('/statuses', statusesRoute.get)
+app.post('/statuses', statusesRoute.post)
+app.get('/status/:id', statusRoute.get)
+app.delete('/status/:id', statusRoute.del)
 
 app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)
