@@ -87,7 +87,7 @@ describe('Get all projects', () => {
             }
         ]
 
-        const actual = await Project.all()
+        const actual = await Project.getAll()
 
         expect(expected).to.deep.equal(actual.map(project => {return _.omit(project, ['id'])}))
     })

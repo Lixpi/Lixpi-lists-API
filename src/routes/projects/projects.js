@@ -17,7 +17,7 @@ const post = async (req, res) => {
 const get = async (req, res) => {
     authMiddleware(req, res)
 
-    const projects = await Project.all()
+    const projects = await Project.getAll()
     res.status(200).json(projects)
 }
 
