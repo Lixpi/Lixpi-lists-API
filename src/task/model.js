@@ -139,6 +139,10 @@ const Model = (config) => {
                 id: task.authorId,
                 username: task.authorUsername
             },
+            type: {
+                id: task.typeId,
+                title: task.typeTitle
+            },
             priority: {
                 id: task.priorityId,
                 title: task.priorityTitle
@@ -163,12 +167,6 @@ const Model = (config) => {
         }
         if (task.dueAt) {
             taskFormatted.dueAt = task.dueAt
-        }
-        if (task.typeId) {
-            taskFormatted.type = {
-                id: task.typeId,
-                title: task.typeTitle
-            }
         }
         if (labels.length) {
             taskFormatted.labels = labels
