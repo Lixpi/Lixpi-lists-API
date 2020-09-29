@@ -1,7 +1,7 @@
 'use strict'
 
 const authMiddleware = require('../../middleware/auth')
-const { Priority } = require('../../priority/model')
+const { Priority } = require('../../models/priority')
 
 const post = async (req, res) => {
     authMiddleware(req, res)
