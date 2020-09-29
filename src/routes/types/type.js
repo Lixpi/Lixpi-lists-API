@@ -1,7 +1,7 @@
 'use strict'
 
 const authMiddleware = require('../../middleware/auth')
-const { Type } = require('../../type/model')
+const { Type } = require('../../models/type')
 
 const get = async (req, res) => {
     authMiddleware(req, res)
@@ -13,7 +13,7 @@ const get = async (req, res) => {
 
 const del = async (req, res) => {
     authMiddleware(req, res)
-    
+
     await Type.delete(req.params.id)
 
     res.status(200).json(

@@ -29,7 +29,7 @@ const registerRoute = require('./routes/register')
 
 const KnexSessionStore = require('connect-session-knex')(session)
 const { knex } = require('./db/knex')
-const { User } = require('./user/model')
+const { User } = require('./models/user')
 
 const app = express()
 app.use(express.json())
