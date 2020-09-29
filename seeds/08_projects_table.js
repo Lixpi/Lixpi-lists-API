@@ -1,6 +1,6 @@
 'use strict'
 
-const { Project } = require('../src/project/model')
+const { Project } = require('../src/models/project')
 
 exports.seed = function(knex) {
     return knex('projects').del()
