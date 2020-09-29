@@ -22,6 +22,9 @@ const statusRoute = require('./routes/statuses/status')
 const prioritiesRoute = require('./routes/priorities/priorities')
 const priorityRoute = require('./routes/priorities/priority')
 
+const labelsRoute = require('./routes/labels/labels')
+const labelRoute = require('./routes/labels/label')
+
 const loginRoute = require('./routes/login')
 const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
@@ -108,6 +111,11 @@ app.get('/priorities', prioritiesRoute.get)
 app.post('/priorities', prioritiesRoute.post)
 app.get('/priority/:id', priorityRoute.get)
 app.delete('/priority/:id', priorityRoute.del)
+
+app.get('/priorities', labelsRoute.get)
+app.post('/priorities', labelsRoute.post)
+app.get('/priority/:id', labelRoute.get)
+app.delete('/priority/:id', labelRoute.del)
 
 app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)
