@@ -24,6 +24,7 @@ const post = async (req, res) => {
         statusId: req.body.statusId,
         priorityId: req.body.priorityId,
         labelIds: req.body.labelIds,
+        versionIds: req.body.versionIds,
         assignees: req.body.assignees
     }
     const task = await Task.create(newTaskData)

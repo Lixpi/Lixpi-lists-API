@@ -1,6 +1,6 @@
 'use strict'
 
-const { Task } = require('../src/task/model')
+const { Task } = require('../src/models/task')
 
 exports.seed = function(knex) {
     return knex('tasks').del()
@@ -18,6 +18,7 @@ exports.seed = function(knex) {
                 typeId: 1,
                 statusId: 1,
                 labelIds: [1, 2],
+                versionIds: [1, 2],
                 assignees: [
                     {userId: 1, assigneeRoleId: 1}
                 ]

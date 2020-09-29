@@ -1,7 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcrypt')
-const { User } = require('../src/user/model')
+const { User } = require('../src/models/user')
 
 exports.seed = function(knex) {
     return knex('users').del()

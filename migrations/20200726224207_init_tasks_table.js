@@ -6,7 +6,6 @@ exports.up = function(knex) {
         table.unique('key')
         table.string('title').notNull()
         table.string('description')
-        table.string('version')
         table.integer('time_estimated').unsigned()
         table.integer('time_spent').unsigned()
         table.date('due_at')
