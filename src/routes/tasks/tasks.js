@@ -20,11 +20,11 @@ const post = async (req, res) => {
         timeSpent: req.body.timeSpent,
         dueAt: req.body.dueAt,
         authorId: req.user.id,
-        typeId: req.body.typeId,
-        statusId: req.body.statusId,
-        priorityId: req.body.priorityId,
-        labelIds: req.body.labelIds,
-        versionIds: req.body.versionIds,
+        type: req.body.type,
+        status: req.body.status,
+        priority: req.body.priority,
+        labels: req.body.labels,
+        versions: req.body.versions,
         assignees: req.body.assignees
     }
     const task = await Task.create(newTaskData)
