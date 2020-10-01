@@ -202,11 +202,11 @@ const Model = (config) => {
         timeSpent = null,
         dueAt = null,
         authorId,
-        typeId = null,
-        statusId = null,
-        priorityId = null,
-        labelIds = null,
-        versionIds = null,
+        type = {id: null},
+        status = {id: null},
+        priority = {id: null},
+        labels = [],
+        versions = [],
         assignees = null
     }) => {
         const newKeyResponse = await knex.raw('SELECT project_generate_next_sequence_val_procedure(?)', projectId)
@@ -221,9 +221,9 @@ const Model = (config) => {
             dueAt,
             authorId,
             projectId,
-            priorityId,
-            typeId,
-            statusId
+            priorityId: priority.id,
+            typeId: type.id,
+            statusId: status.id
         })
 
         const trxProvider = await knex.transactionProvider()
@@ -250,14 +250,14 @@ const Model = (config) => {
             const taskId = tasks[0].id
 
             let insertedTasksLabels = null
-            if (labelIds) {
-                const taskLabels = labelIds.map(labelId => (underscoreKeys({taskId, labelId})))
+            if (labels.length) {
+                const taskLabels = labels.map(label => (underscoreKeys({taskId, labelId: label.id})))
                 insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
             }
 
             let insertedTasksVersions = null
-            if (versionIds) {
-                const taskVersions = versionIds.map(versionId => (underscoreKeys({taskId, versionId})))
+            if (versions.length) {
+                const taskVersions = versions.map(version => (underscoreKeys({taskId, versionId: version.id})))
                 insertedTasksVersions = await  trx(config.versionsTableName).insert(taskVersions, ['version_id'])
             }
 
