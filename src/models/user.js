@@ -2,10 +2,11 @@
 
 const bcrypt = require('bcrypt')
 const { knex } = require('../db/knex')
-const { canFindById } = require('../core/model')
+const { canFindById, canGetAll, canDelete } = require('../core/model')
 
 const config = {
-    tableName: 'users'
+    tableName: 'users',
+    selectColumns: ['id', 'username']
 }
 
 const Model = (config) => {
@@ -21,7 +22,7 @@ const Model = (config) => {
             password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
         }))
 
-        return knex(config.tableName).insert(insertData)
+        return knex(config.tableName).insert(insertData).returning(['id', 'username'])
     }
 
     const comparePassword = password => {
@@ -32,10 +33,12 @@ const Model = (config) => {
 
     return {
         ...state,
+        ...canGetAll(config),
         ...canFindById(config),
         findByUsername,
         create,
-        comparePassword
+        comparePassword,
+        ...canDelete(config)
     }
 }
 

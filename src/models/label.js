@@ -1,7 +1,7 @@
 'use strict'
 
 const { knex } = require('../db/knex')
-const { canFindById, canGetAll } = require('../core/model')
+const { canFindById, canGetAll, canDelete } = require('../core/model')
 
 const config = {
     tableName: 'labels'
@@ -21,14 +21,12 @@ const Model = (config) => {
         return knex(config.tableName).insert(insertData)
     }
 
-    const del = async id => knex(config.tableName).where({id}).del()
-
     return {
         ...state,
         ...canGetAll(config),
         ...canFindById(config),
         create,
-        del
+        ...canDelete(config)
     }
 }
 
