@@ -263,7 +263,11 @@ const Model = (config) => {
 
             let insertedTaskAssignees = null
             if (assignees) {
-                const taskAssignees = assignees.map(assignee => (underscoreKeys({taskId, ...assignee})))
+                const taskAssignees = assignees.map(assignee => (underscoreKeys({
+                    taskId,
+                    userId: assignee.userId,
+                    assigneeRoleId: assignee.assigneeRoleId
+                })))
                 insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
             }
 
