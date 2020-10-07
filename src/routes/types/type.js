@@ -16,9 +16,7 @@ const del = async (req, res) => {
 
     await Type.delete(req.params.id)
 
-    res.status(200).json(
-        'Type is deleted.'
-    )
+    res.status(200).json('Type is deleted.')
 }
 
 module.exports = {

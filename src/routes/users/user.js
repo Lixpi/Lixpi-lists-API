@@ -1,22 +1,22 @@
 'use strict'
 
 const authMiddleware = require('../../middleware/auth')
-const { Status } = require('../../models/status')
+const { User } = require('../../models/user')
 
 const get = async (req, res) => {
     authMiddleware(req, res)
 
-    await Status.findById(req.params.id.toUpperCase()).then(status => {
-        res.status(200).json(status)
+    await User.findById(req.params.id.toUpperCase()).then(user => {
+        res.status(200).json(user)
     })
 }
 
 const del = async (req, res) => {
     authMiddleware(req, res)
 
-    await Status.delete(req.params.id)
+    await User.delete(req.params.id)
 
-    res.status(200).json('Status is deleted.')
+    res.status(200).json('User is deleted.')
 }
 
 module.exports = {

@@ -16,9 +16,7 @@ const del = async (req, res) => {
 
     await Label.delete(req.params.id)
 
-    res.status(200).json(
-        'Label is deleted.'
-    )
+    res.status(200).json('Label is deleted.')
 }
 
 module.exports = {

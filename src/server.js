@@ -28,6 +28,9 @@ const labelRoute = require('./routes/labels/label')
 const versionsRoute = require('./routes/versions/versions')
 const versionRoute = require('./routes/versions/version')
 
+const usersRoute = require('./routes/users/users')
+const userRoute = require('./routes/users/user')
+
 const loginRoute = require('./routes/login')
 const logoutRoute = require('./routes/logout')
 const testAuthRoute = require('./routes/testauth')
@@ -124,6 +127,12 @@ app.get('/versions', versionsRoute.get)
 app.post('/versions', versionsRoute.post)
 app.get('/version/:id', versionRoute.get)
 app.delete('/version/:id', versionRoute.del)
+
+
+app.get('/users', usersRoute.get)
+app.post('/users', usersRoute.post)
+app.get('/user/:id', userRoute.get)
+app.delete('/user/:id', userRoute.del)
 
 app.post('/login', loginRoute.post)
 app.get('/logout', logoutRoute.get)

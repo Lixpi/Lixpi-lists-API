@@ -16,9 +16,7 @@ const del = async (req, res) => {
 
     await Priority.delete(req.params.id)
 
-    res.status(200).json(
-        'Priority is deleted.'
-    )
+    res.status(200).json('Priority is deleted.')
 }
 
 module.exports = {

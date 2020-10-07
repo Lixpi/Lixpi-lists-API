@@ -76,7 +76,7 @@ const Model = (config) => {
         ...canFindByKey(config),
         ...canGetAll(config),
         create,
-        del
+        delete: del
     }
 }
 
