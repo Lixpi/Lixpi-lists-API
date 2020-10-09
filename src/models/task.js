@@ -105,6 +105,7 @@ const Model = (config) => {
             .leftJoin('priorities', {'tasks.priority_id': 'priorities.id'})
             .leftJoin('types', {'tasks.type_id': 'types.id'})
             .leftJoin('statuses', {'tasks.status_id': 'statuses.id'})
+            .orderBy('id')
 
         return Promise.all(
             tasks.map(async task => {
@@ -116,6 +117,7 @@ const Model = (config) => {
                     .from('task_labels')
                     .where({ 'task_labels.task_id': task.id })
                     .leftJoin('labels', {'task_labels.label_id': 'labels.id'})
+
 
                 const versions = await knex.select(
                     'versions.id',
