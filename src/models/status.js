@@ -1,7 +1,7 @@
 'use strict'
 
 const { knex } = require('../db/knex')
-const { canFindById, canGetAll, canDelete } = require('../core/model')
+const { canFindById, canGetAll, canDeleteById } = require('../core/model')
 
 const config = {
     tableName: 'statuses'
@@ -25,7 +25,7 @@ const Model = (config) => {
         ...canGetAll(config),
         ...canFindById(config),
         create,
-        ...canDelete(config)
+        ...canDeleteById(config)
     }
 }
 

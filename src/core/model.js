@@ -20,9 +20,14 @@ module.exports = {
             .select(...config.selectColumns || '*')
             .orderBy(orderBy)
     }),
-    canDelete: config => ({
+    canDeleteById: config => ({
         delete: async id => await knex(config.tableName)
             .where({id})
+            .del()
+    }),
+    canDeleteByKey: config => ({
+        delete: async key => await knex(config.tableName)
+            .where({key})
             .del()
     }),
 }

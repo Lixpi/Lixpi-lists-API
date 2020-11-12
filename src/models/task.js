@@ -4,7 +4,7 @@ const { _ } = require('lodash')
 
 const { knex } = require('../db/knex')
 const { camelizeKeys, underscoreKeys } = require('../helpers/object')
-const { canDelete } = require('../core/model')
+const { canDeleteById } = require('../core/model')
 
 const config = {
     tableName: 'tasks',
@@ -254,13 +254,13 @@ const Model = (config) => {
             let insertedTasksLabels = null
             if (labels.length) {
                 const taskLabels = labels.map(label => (underscoreKeys({taskId, labelId: label.id})))
-                insertedTasksLabels = await  trx(config.labelsTableName).insert(taskLabels, ['label_id'])
+                insertedTasksLabels = await trx(config.labelsTableName).insert(taskLabels, ['label_id'])
             }
 
             let insertedTasksVersions = null
             if (versions.length) {
                 const taskVersions = versions.map(version => (underscoreKeys({taskId, versionId: version.id})))
-                insertedTasksVersions = await  trx(config.versionsTableName).insert(taskVersions, ['version_id'])
+                insertedTasksVersions = await trx(config.versionsTableName).insert(taskVersions, ['version_id'])
             }
 
             let insertedTaskAssignees = null
@@ -270,7 +270,116 @@ const Model = (config) => {
                     userId: assignee.userId,
                     assigneeRoleId: assignee.assigneeRoleId
                 })))
-                insertedTaskAssignees = await  trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
+                insertedTaskAssignees = await trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
+            }
+
+            trx.commit()
+
+            return Object.assign(
+                state,
+                camelizeKeys({
+                    ...tasks[0],
+                    labelIds: insertedTasksLabels,
+                    versionIds: insertedTasksVersions,
+                    assignees: insertedTaskAssignees
+                })
+            )
+        }
+        catch (e) {
+            trx.rollback()
+            throw e
+        }
+    }
+
+    const update = async ({
+        key,
+        projectId,
+        title,
+        description = null,
+        timeEstimated = null,
+        timeSpent = null,
+        dueAt = null,
+        authorId,
+        type = {id: null},
+        status = {id: null},
+        priority = {id: null},
+        labels = [],
+        versions = [],
+        assignees = null
+    }) => {
+        const updatedTaskData = underscoreKeys({
+            title,
+            description,
+            timeEstimated,
+            timeSpent,
+            dueAt,
+            authorId,
+            projectId,
+            priorityId: priority.id,
+            typeId: type.id,
+            statusId: status.id,
+            updatedAt: new Date
+        })
+
+        const trxProvider = await knex.transactionProvider()
+        const trx = await trxProvider()
+        // return
+        try {
+            const tasks = await trx(config.tableName).where('key', key).update(updatedTaskData, [
+                'id',
+                'key',
+                'title',
+                'description',
+                'time_estimated',
+                'time_spent',
+                'due_at',
+                'author_id',
+                'project_id',
+                'priority_id',
+                'type_id',
+                'status_id',
+                'created_at',
+                'updated_at'
+            ])
+
+            //TODO handle bulk task create
+            const taskId = tasks[0].id
+
+            let insertedTasksLabels = null
+            if (labels.length) {
+                // This is ridiculous I KNOW, but yes we're deleting all task's labels and then reinserting them again along with changed ones
+                // Just because I don't have a spare second to think of a better code, I just need to roll out this thing before I get too old
+                // TODO REFACTOR THIS ASAP
+                await trx(config.labelsTableName).where('task_id', taskId).del()
+
+                const taskLabels = labels.map(label => (underscoreKeys({taskId, labelId: label.id})))
+                insertedTasksLabels = await trx(config.labelsTableName).insert(taskLabels, ['label_id'])
+            }
+
+            let insertedTasksVersions = null
+            if (versions.length) {
+                // This is ridiculous I KNOW, but yes we're deleting all task's versions and then reinserting them again along with changed ones
+                // Just because I don't have a spare second to think of a better code, I just need to roll out this thing before I get too old
+                // TODO REFACTOR THIS ASAP
+                await trx(config.versionsTableName).where('task_id', taskId).del()
+
+                const taskVersions = versions.map(version => (underscoreKeys({taskId, versionId: version.id})))
+                insertedTasksVersions = await trx(config.versionsTableName).insert(taskVersions, ['version_id'])
+            }
+
+            let insertedTaskAssignees = null
+            if (assignees) {
+                // This is ridiculous I KNOW, but yes we're deleting all task's assignees and then reinserting them again along with changed ones
+                // Just because I don't have a spare second to think of a better code, I just need to roll out this thing before I get too old
+                // TODO REFACTOR THIS ASAP
+                await trx(config.assigneesTableName).where('task_id', taskId).del()
+
+                const taskAssignees = assignees.map(assignee => (underscoreKeys({
+                    taskId,
+                    userId: assignee.userId,
+                    assigneeRoleId: assignee.assigneeRoleId
+                })))
+                insertedTaskAssignees = await trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
             }
 
             trx.commit()
@@ -296,7 +405,8 @@ const Model = (config) => {
         findByKey,
         getAll,
         create,
-        ...canDelete(config)
+        update,
+        ...canDeleteById(config)
     }
 }
 
