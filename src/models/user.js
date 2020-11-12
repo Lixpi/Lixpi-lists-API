@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt')
 const { knex } = require('../db/knex')
-const { canFindById, canGetAll, canDelete } = require('../core/model')
+const { canFindById, canGetAll, canDeleteById } = require('../core/model')
 
 const config = {
     tableName: 'users',
@@ -38,7 +38,7 @@ const Model = (config) => {
         findByUsername,
         create,
         comparePassword,
-        ...canDelete(config)
+        ...canDeleteById(config)
     }
 }
 
