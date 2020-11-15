@@ -5,7 +5,7 @@ exports.up = function(knex) {
         table.integer('task_id').unsigned()
         table.foreign('task_id').references('tasks.id').onDelete('CASCADE')
         table.integer('user_id').unsigned()
-        table.foreign('user_id').references('labels.id').onDelete('CASCADE')
+        table.foreign('user_id').references('users.id').onDelete('CASCADE')
         table.integer('assignee_role_id').unsigned()
         table.foreign('assignee_role_id').references('assignee_roles.id').onDelete('CASCADE')
     })
