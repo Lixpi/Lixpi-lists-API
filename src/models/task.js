@@ -268,7 +268,8 @@ const Model = (config) => {
                 const taskAssignees = assignees.map(assignee => (underscoreKeys({
                     taskId,
                     userId: assignee.userId,
-                    assigneeRoleId: assignee.assigneeRoleId
+                    // assigneeRoleId: assignee.assigneeRoleId
+                    assigneeRoleId: 1 // Hardcoding user role for now, until I'll come up with a better idea how to implement it on UI
                 })))
                 insertedTaskAssignees = await trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
             }
@@ -377,7 +378,8 @@ const Model = (config) => {
                 const taskAssignees = assignees.map(assignee => (underscoreKeys({
                     taskId,
                     userId: assignee.userId,
-                    assigneeRoleId: assignee.assigneeRoleId
+                    // assigneeRoleId: assignee.assigneeRoleId
+                    assigneeRoleId: 1 // Hardcoding user role for now, until I'll come up with a better idea how to implement it on UI
                 })))
                 insertedTaskAssignees = await trx(config.assigneesTableName).insert(taskAssignees, ['user_id', 'assignee_role_id'])
             }
